@@ -19,7 +19,6 @@ namespace Game
         public static Image spriteGrass;
         public static Image plainsSheet;
 
-        // grass plains
         public MapController(params Image[] sprites)
         {
             spriteGrass = sprites[0];
@@ -115,8 +114,7 @@ namespace Game
         }
         public int GetHeight()
         {
-            return cellSize * mapHeight + 1 + 10;
+            return cellSize * mapHeight + 14;
         }
-
     }
 }

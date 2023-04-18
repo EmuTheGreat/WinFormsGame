@@ -9,9 +9,9 @@ namespace Game.Models
 {
     public static class Player
     {
-        static public int idleFrames = 6;
+        static public int idleFrames = 4;
         static public int runFrames = 6;
-        static public int attackFrames = 4;
-        static public int deathFrames = 3;
+        static public int attackFrames = 7;
+        static public int deathFrames = 4;
     }
 }

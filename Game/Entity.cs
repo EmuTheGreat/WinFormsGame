@@ -8,6 +8,7 @@ namespace Game
     public class Entity
     {
         public int healthPoint;
+        public bool isAlive;
 
         public int posX;
         public int posY;
@@ -21,6 +22,7 @@ namespace Game
         public bool isMovingUp = false;
         public bool isMovingDown = false;
         public bool isAttack = false;
+        public bool deathAnimationFlag = false;
 
         public int currentFrame;
         public int currentAnimation;
@@ -52,9 +54,10 @@ namespace Game
             currentLimit = idleFrames;
             size = 192;
             speed = 4;
+            isAlive = true;
         }
 
-        public void Move()
+        public virtual void Move()
         {
             posX += dirX;
             posY += dirY;
@@ -65,13 +68,20 @@ namespace Game
         public void PlayAnimation(Graphics g)
         {
             g.DrawImage(spriteSheet,
-            new Rectangle(new Point(posX - flip * (size + 4) / 2, posY), new Size(flip *size, size)),
+            new Rectangle(new Point(posX - flip * (size + 4) / 2, posY), new Size(flip * size, size)),
             size * currentFrame, size * currentAnimation, size, size, GraphicsUnit.Pixel);
 
             if (++currentTime > preiod)
             {
                 currentTime = 0;
                 currentFrame = ++currentFrame % currentLimit;
+            }
+
+            if (!isAlive)
+            {
+                if (!deathAnimationFlag) SetAnimation(9);
+                deathAnimationFlag = true;
+                if (currentFrame == 3) --currentFrame;
             }
 
             if (isAttack)
@@ -124,7 +134,7 @@ namespace Game
                 case 8:
                     currentFrame = 0;
                     currentLimit = attackFrames; break;
-                case 10:
+                case 9:
                     currentFrame = 0;
                     currentLimit = deathFrames; break;
             }

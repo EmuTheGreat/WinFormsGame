@@ -22,11 +22,10 @@ namespace Game
 
 
         public void Update(object sendler, EventArgs e)
-        {
+        { 
             if (player.IsMoving() && !player.isAttack)
             {
                 player.Move();
-
                 player.SetRunAnimation();
             }
 

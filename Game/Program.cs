@@ -16,6 +16,7 @@ namespace Game
             public static Image playerSheet;
             public static Image grassSprite;
             public static Image plainsSheet;
+            public static Image slimeSheet;
 
             public Model()
             {
@@ -26,6 +27,8 @@ namespace Game
                     "Content\\tilesets\\grassEnlarged.png"));
                 plainsSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
                     "Content\\tilesets\\plainsEnlarged.png"));
+                slimeSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
+                    "Content\\characters\\slimeEnlarged.png"));
                 #endregion
 
                 player = new Entity(512, 256,
@@ -42,61 +45,67 @@ namespace Game
         {
             public static void KeyPress(object sender, KeyEventArgs e)
             {
-                switch (e.KeyCode)
+                if (player.isAlive)
                 {
-                    #region Move
-                    case Keys.W:
-                        player.dirY = -player.speed;
-                        player.isMovingUp = true;
-                        break;
-                    case Keys.S:
-                        player.dirY = player.speed;
-                        player.isMovingDown = true;
-                        break;
-                    case Keys.A:
-                        player.dirX = -player.speed;
-                        player.isMovingLeft = true;
-                        player.flip = -1;
-                        break;
-                    case Keys.D:
-                        player.dirX = player.speed;
-                        player.isMovingRight = true;
-                        player.flip = 1;
-                        break;
-                    #endregion
-
-                    #region Attack
-                    case Keys.Up:
-                        if (!player.isAttack)
-                        {
-                            player.isAttack = true;
-                            player.SetAnimation(8);
-                        }
-                        break;
-                    case Keys.Down:
-                        if (!player.isAttack)
-                        {
-                            player.isAttack = true;
-                            player.SetAnimation(6);
-                        }
-                        break;
-                    case Keys.Left:
-                        if (!player.isAttack)
-                        {
-                            player.isAttack = true;
+                    switch (e.KeyCode)
+                    {
+                        #region Move
+                        case Keys.W:
+                            player.dirY = -player.speed;
+                            player.isMovingUp = true;
+                            break;
+                        case Keys.S:
+                            player.dirY = player.speed;
+                            player.isMovingDown = true;
+                            break;
+                        case Keys.A:
+                            player.dirX = -player.speed;
+                            player.isMovingLeft = true;
                             player.flip = -1;
-                            player.SetAnimation(7);
-                        }
-                        break;
-                    case Keys.Right:
-                        if (!player.isAttack)
-                        {
-                            player.isAttack = true;
+                            break;
+                        case Keys.D:
+                            player.dirX = player.speed;
+                            player.isMovingRight = true;
                             player.flip = 1;
-                            player.SetAnimation(7);
-                        }
-                        break;
+                            break;
+                        case Keys.J:
+                            player.isAlive = false;
+                            break;
                         #endregion
+
+                        #region Attack
+                        case Keys.Up:
+                            if (!player.isAttack)
+                            {
+                                player.isAttack = true;
+                                player.SetAnimation(8);
+                            }
+                            break;
+                        case Keys.Down:
+                            if (!player.isAttack)
+                            {
+                                player.isAttack = true;
+                                player.SetAnimation(6);
+                            }
+                            break;
+                        case Keys.Left:
+                            if (!player.isAttack)
+                            {
+                                player.isAttack = true;
+                                player.flip = -1;
+                                player.SetAnimation(7);
+                            }
+                            break;
+                        case Keys.Right:
+                            if (!player.isAttack)
+                            {
+                                player.isAttack = true;
+                                player.flip = 1;
+                                player.SetAnimation(7);
+                            }
+                            break;
+                            #endregion
+                    }
                 }
             }
 
@@ -107,22 +116,22 @@ namespace Game
                     case Keys.W:
                         player.dirY = player.isMovingDown ? player.dirY : 0;
                         player.isMovingUp = false;
-                        if (!player.IsMoving()) player.SetAnimation(2);
+                        if (player.isAlive && !player.IsMoving()) player.SetAnimation(2);
                         break;
                     case Keys.S:
                         player.dirY = player.isMovingUp ? player.dirY : 0;
                         player.isMovingDown = false;
-                        if (!player.IsMoving()) player.SetAnimation(0);
+                        if (player.isAlive && !player.IsMoving()) player.SetAnimation(0);
                         break;
                     case Keys.A:
                         player.dirX = player.isMovingRight ? player.dirX : 0;
                         player.isMovingLeft = false;
-                        if (!player.IsMoving()) player.SetAnimation(1);
+                        if (player.isAlive && !player.IsMoving()) player.SetAnimation(1);
                         break;
                     case Keys.D:
                         player.dirX = player.isMovingLeft ? player.dirX : 0;
                         player.isMovingRight = false;
-                        if (!player.IsMoving()) player.SetAnimation(1);
+                        if (player.isAlive && !player.IsMoving()) player.SetAnimation(1);
                         break;
 
                 }
@@ -140,7 +149,7 @@ namespace Game
 
                 cameraX = Math.Max(0, Math.Min(map.GetWidth() - 1024, cameraX));
                 cameraY = Math.Max(0, Math.Min(map.GetHeight() - 768 + 25, cameraY));
-                
+
                 g.TranslateTransform(-cameraX, -cameraY);
 
                 map.DrawMap(g);
