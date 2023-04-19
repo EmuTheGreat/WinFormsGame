@@ -54,6 +54,7 @@
     </Compile>
     <Compile Include="Entity.cs" />
     <Compile Include="MapController.cs" />
+    <Compile Include="Models\ICreature.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Slime.cs" />
     <Compile Include="Program.cs" />

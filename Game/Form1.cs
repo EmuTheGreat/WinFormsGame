@@ -20,7 +20,6 @@ namespace Game
             timer1.Start();
         }
 
-
         public void Update(object sendler, EventArgs e)
         { 
             if (player.isAlive && player.IsMoving() && !player.isAttack)

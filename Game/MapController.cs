@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace Game
 {
@@ -112,6 +105,7 @@ namespace Game
         {
             return cellSize * mapWidth + 15;
         }
+
         public int GetHeight()
         {
             return cellSize * mapHeight + 14;

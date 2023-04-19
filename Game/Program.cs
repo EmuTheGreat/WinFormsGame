@@ -8,6 +8,7 @@ namespace Game
 {
     public class MVC
     {
+        public static Entity slime;
         public static Entity player;
         public static MapController map;
 
@@ -31,12 +32,9 @@ namespace Game
                     "Content\\characters\\slimeEnlarged.png"));
                 #endregion
 
-                player = new Entity(512, 256,
-                    Player.idleFrames,
-                    Player.runFrames,
-                    Player.attackFrames,
-                    Player.deathFrames,
-                    playerSheet);
+                slime = new Entity(800, 800, new Slime(), slimeSheet);
+                player = new Entity(512, 256, new Player(), playerSheet);
+
                 map = new MapController(grassSprite, plainsSheet);
             }
         }
@@ -139,7 +137,6 @@ namespace Game
                         player.isMovingRight = false;
                         if (player.isAlive && !player.IsMoving()) player.SetAnimation(1);
                         break;
-
                 }
             }
         }
@@ -160,6 +157,7 @@ namespace Game
 
                 map.DrawMap(g);
                 player.PlayAnimation(g);
+                slime.PlayAnimation(g);
             }
         }
     }

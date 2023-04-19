@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Game.Models
+﻿namespace Game.Models
 {
-    public static class Slime
+    public class Slime : ICreature
     {
-        static public int idleFrames = 6;
-        static public int runFrames = 6;
-        static public int attackFrames = 4;
-        static public int deathFrames = 3;
+        public int size => 128;
+
+        public int speed => 2;
+
+        int ICreature.idleFrames => 4;
+
+        int ICreature.runFrames => 6;
+
+        int ICreature.attackFrames => 7;
+
+        int ICreature.deathFrames => 5;
     }
 }

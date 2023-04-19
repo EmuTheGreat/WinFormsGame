@@ -39,21 +39,21 @@ namespace Game
         int currentTime = 0;
         int preiod = 5;
 
-        public Entity(int posX, int posY, int idleFrames, int runFrames, int attackFrames, int deathFrames, Image spriteSheet)
+        public Entity(int posX, int posY, ICreature model, Image spriteSheet)
         {
             this.posX = posX;
             this.posY = posY;
-            this.idleFrames = idleFrames;
-            this.runFrames = runFrames;
-            this.attackFrames = attackFrames;
-            this.deathFrames = deathFrames;
             this.spriteSheet = spriteSheet;
+            idleFrames = model.idleFrames;
+            runFrames = model.runFrames;
+            attackFrames = model.attackFrames;
+            deathFrames = model.deathFrames;
+            size = model.size;
+            speed = model.speed;
+            currentLimit = idleFrames;
             currentAnimation = 0;
             currentFrame = 0;
             flip = 1;
-            currentLimit = idleFrames;
-            size = 192;
-            speed = 4;
             isAlive = true;
         }
 
