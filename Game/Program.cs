@@ -107,6 +107,12 @@ namespace Game
                             #endregion
                     }
                 }
+                if (e.KeyCode == Keys.K)
+                {
+                    player.isAlive = true;
+                    player.deathAnimationFlag = false;
+                    player.SetAnimation(1);
+                }
             }
 
             public static void KeyUp(object sender, KeyEventArgs e)
