@@ -6,11 +6,11 @@
 
         public int speed => 4;
 
-        int ICreature.idleFrames => 4;
+        int ICreature.idleFrames => 6;
 
         int ICreature.runFrames => 6;
 
-        int ICreature.attackFrames => 7;
+        int ICreature.attackFrames => 4;
 
         int ICreature.deathFrames => 4;
     }
