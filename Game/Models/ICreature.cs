@@ -7,6 +7,8 @@
         int attackFrames { get; }
         int deathFrames { get; }
         int size { get; }
+        int spriteSize { get; }
         int speed { get; }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Game.Models;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Threading;
 
@@ -32,6 +33,7 @@ namespace Game
         public int attackFrames;
         public int deathFrames;
 
+        public int spriteSize;
         public int size;
         public int flip;
 
@@ -49,6 +51,7 @@ namespace Game
             attackFrames = model.attackFrames;
             deathFrames = model.deathFrames;
             size = model.size;
+            spriteSize = model.spriteSize;
             speed = model.speed;
             currentLimit = idleFrames;
             currentAnimation = 0;
@@ -69,7 +72,7 @@ namespace Game
         {
             g.DrawImage(spriteSheet,
             new Rectangle(new Point(posX - flip * (size + 4) / 2, posY), new Size(flip * size, size)),
-            size * currentFrame, size * currentAnimation, size, size, GraphicsUnit.Pixel);
+            spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
 
             if (++currentTime > preiod)
             {

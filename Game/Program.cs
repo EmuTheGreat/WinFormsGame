@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using Game.Models;
 using System.IO;
+using System.Linq;
+using System.Drawing.Drawing2D;
 
 namespace Game
 {
@@ -21,15 +23,16 @@ namespace Game
 
             public Model()
             {
+
                 #region Textures
                 playerSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
-                    "Content\\characters\\playerEnlarged++.png"));
+                    "Content\\characters\\player.png"));
                 grassSprite = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
                     "Content\\tilesets\\grassEnlarged.png"));
                 plainsSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
                     "Content\\tilesets\\plainsEnlarged.png"));
                 slimeSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
-                    "Content\\characters\\slimeEnlarged.png"));
+                    "Content\\characters\\slime.png"));
                 #endregion
 
                 slime = new Entity(800, 800, new Slime(), slimeSheet);
@@ -146,6 +149,7 @@ namespace Game
             public static void Paint(object sender, PaintEventArgs e)
             {
                 Graphics g = e.Graphics;
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
 
                 int cameraX = player.posX - 1024 / 2;
                 int cameraY = player.posY - 768 / 2;
@@ -156,8 +160,16 @@ namespace Game
                 g.TranslateTransform(-cameraX, -cameraY);
 
                 map.DrawMap(g);
-                player.PlayAnimation(g);
-                slime.PlayAnimation(g);
+
+                Entity[] queqe = new Entity[] { player, slime };
+
+                foreach (var entity in queqe.OrderByDescending(x => x.posY))
+                {
+                    entity.PlayAnimation(g);
+                }
+
+                //player.PlayAnimation(g);
+                //slime.PlayAnimation(g);
             }
         }
     }

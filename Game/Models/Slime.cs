@@ -6,6 +6,8 @@
 
         public int speed => 2;
 
+        public int spriteSize => 32;
+
         int ICreature.idleFrames => 4;
 
         int ICreature.runFrames => 6;
