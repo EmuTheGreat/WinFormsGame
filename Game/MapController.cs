@@ -7,6 +7,7 @@ namespace Game
         public const int mapHeight = 20;
         public const int mapWidth = 20;
         public static int cellSize = 64;
+        public static int spriteSize = 16;
         public static int[,] map = new int[mapHeight, mapWidth];
         public static Image spriteSheet;
         public static Image spriteGrass;
@@ -52,49 +53,49 @@ namespace Game
             {
                 for (int j = 0; j < mapHeight; j++)
                 {
-                    var rect = new Rectangle(new Point(i * cellSize, j * cellSize), new Size(cellSize, cellSize));
+                    var rect = new Rectangle(new Point(i * cellSize, j * cellSize), new Size(66, 66));
                     var e = map[j, i];
                     switch (e)
                     {
                         case 0:
-                            g.DrawImage(spriteGrass, rect, 0, 0, 64, 64, GraphicsUnit.Pixel);
+                            g.DrawImage(spriteGrass, rect, 0, 0, spriteSize, spriteSize, GraphicsUnit.Pixel);
                             break;
                         case 1:
                         case 2:
                         case 3:
-                            g.DrawImage(plainsSheet, rect, 64 * e, 0, 64, 64, GraphicsUnit.Pixel);
+                            g.DrawImage(plainsSheet, rect, 16 * e, 0, spriteSize, spriteSize, GraphicsUnit.Pixel);
                             break;
                         case 4:
-                            g.DrawImage(spriteGrass, rect, 0, 0, 64, 64, GraphicsUnit.Pixel);
-                            g.DrawImage(plainsSheet, rect, 256, 320, 64, 64, GraphicsUnit.Pixel);
+                            g.DrawImage(spriteGrass, rect, 0, 0, spriteSize, spriteSize, GraphicsUnit.Pixel);
+                            g.DrawImage(plainsSheet, rect, 64, 80, spriteSize, spriteSize, GraphicsUnit.Pixel);
                             break;
                         case 5:
-                            g.DrawImage(spriteGrass, rect, 0, 0, 64, 64, GraphicsUnit.Pixel);
-                            g.DrawImage(plainsSheet, rect, 256, 256, 64, 64, GraphicsUnit.Pixel);
+                            g.DrawImage(spriteGrass, rect, 0, 0, spriteSize, spriteSize, GraphicsUnit.Pixel);
+                            g.DrawImage(plainsSheet, rect, 64, 64, spriteSize, spriteSize, GraphicsUnit.Pixel);
                             break;
                         case 6:
-                            g.DrawImage(spriteGrass, rect, 0, 0, 64, 64, GraphicsUnit.Pixel);
-                            g.DrawImage(plainsSheet, rect, 320, 256, 64, 64, GraphicsUnit.Pixel);
+                            g.DrawImage(spriteGrass, rect, 0, 0, spriteSize, spriteSize, GraphicsUnit.Pixel);
+                            g.DrawImage(plainsSheet, rect, 80, 64, spriteSize, spriteSize, GraphicsUnit.Pixel);
                             break;
                         case 7:
-                            g.DrawImage(spriteGrass, rect, 0, 0, 64, 64, GraphicsUnit.Pixel);
-                            g.DrawImage(plainsSheet, rect, 320, 320, 64, 64, GraphicsUnit.Pixel);
+                            g.DrawImage(spriteGrass, rect, 0, 0, spriteSize, spriteSize, GraphicsUnit.Pixel);
+                            g.DrawImage(plainsSheet, rect, 80, 80, spriteSize, spriteSize, GraphicsUnit.Pixel);
                             break;
                         case 8:
-                            g.DrawImage(spriteGrass, rect, 0, 0, 64, 64, GraphicsUnit.Pixel);
-                            g.DrawImage(plainsSheet, rect, 128, 384, 64, 64, GraphicsUnit.Pixel);
+                            g.DrawImage(spriteGrass, rect, 0, 0, spriteSize, spriteSize, GraphicsUnit.Pixel);
+                            g.DrawImage(plainsSheet, rect, 32, 96, spriteSize, spriteSize, GraphicsUnit.Pixel);
                             break;
                         case 9:
-                            g.DrawImage(spriteGrass, rect, 0, 0, 64, 64, GraphicsUnit.Pixel);
-                            g.DrawImage(plainsSheet, rect, 196, 320, 60, 64, GraphicsUnit.Pixel);
+                            g.DrawImage(spriteGrass, rect, 0, 0, spriteSize, spriteSize, GraphicsUnit.Pixel);
+                            g.DrawImage(plainsSheet, rect, 48, 80, spriteSize, spriteSize, GraphicsUnit.Pixel);
                             break;
                         case 10:
-                            g.DrawImage(spriteGrass, rect, 0, 0, 64, 64, GraphicsUnit.Pixel);
-                            g.DrawImage(plainsSheet, rect, 128, 256, 60, 64, GraphicsUnit.Pixel);
+                            g.DrawImage(spriteGrass, rect, 0, 0, spriteSize, spriteSize, GraphicsUnit.Pixel);
+                            g.DrawImage(plainsSheet, rect, 32, 64, spriteSize, spriteSize, GraphicsUnit.Pixel);
                             break;
                         case 11:
-                            g.DrawImage(spriteGrass, rect, 0, 0, 64, 64, GraphicsUnit.Pixel);
-                            g.DrawImage(plainsSheet, rect, 64, 320, 60, 64, GraphicsUnit.Pixel);
+                            g.DrawImage(spriteGrass, rect, 0, 0, spriteSize, spriteSize, GraphicsUnit.Pixel);
+                            g.DrawImage(plainsSheet, rect, 16, 80, spriteSize, spriteSize, GraphicsUnit.Pixel);
                             break;
                     }
                 }

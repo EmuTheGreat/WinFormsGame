@@ -13,6 +13,8 @@ namespace Game
         public static Entity slime;
         public static Entity player;
         public static MapController map;
+        public static int WindowWidth { get; set; }
+        public static int WindowHeight { get; set; }
 
         public class Model
         {
@@ -23,14 +25,16 @@ namespace Game
 
             public Model()
             {
+                WindowWidth = 1024;
+                WindowHeight = 768;
 
                 #region Textures
                 playerSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
                     "Content\\characters\\player.png"));
                 grassSprite = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
-                    "Content\\tilesets\\grassEnlarged.png"));
+                    "Content\\tilesets\\grass.png"));
                 plainsSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
-                    "Content\\tilesets\\plainsEnlarged.png"));
+                    "Content\\tilesets\\plains.png"));
                 slimeSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
                     "Content\\characters\\slime.png"));
                 #endregion
@@ -46,7 +50,7 @@ namespace Game
         {
             public static void KeyPress(object sender, KeyEventArgs e)
             {
-                if (player.isAlive)
+                if (player.isAlive && !player.isAttack)
                 {
                     switch (e.KeyCode)
                     {
@@ -76,38 +80,27 @@ namespace Game
 
                         #region Attack
                         case Keys.Up:
-                            if (!player.isAttack)
-                            {
-                                player.isAttack = true;
-                                player.SetAnimation(8);
-                            }
+                            player.isAttack = true;
+                            player.SetAnimation(8);
                             break;
                         case Keys.Down:
-                            if (!player.isAttack)
-                            {
-                                player.isAttack = true;
-                                player.SetAnimation(6);
-                            }
+                            player.isAttack = true;
+                            player.SetAnimation(6);
                             break;
                         case Keys.Left:
-                            if (!player.isAttack)
-                            {
-                                player.isAttack = true;
-                                player.flip = -1;
-                                player.SetAnimation(7);
-                            }
+                            player.isAttack = true;
+                            player.flip = -1;
+                            player.SetAnimation(7);
                             break;
                         case Keys.Right:
-                            if (!player.isAttack)
-                            {
-                                player.isAttack = true;
-                                player.flip = 1;
-                                player.SetAnimation(7);
-                            }
+                            player.isAttack = true;
+                            player.flip = 1;
+                            player.SetAnimation(7);
                             break;
                             #endregion
                     }
                 }
+
                 if (e.KeyCode == Keys.K)
                 {
                     player.isAlive = true;
@@ -118,28 +111,31 @@ namespace Game
 
             public static void KeyUp(object sender, KeyEventArgs e)
             {
-                switch (e.KeyCode)
+                if (player.isAlive)
                 {
-                    case Keys.W:
-                        player.dirY = player.isMovingDown ? player.dirY : 0;
-                        player.isMovingUp = false;
-                        if (player.isAlive && !player.IsMoving()) player.SetAnimation(2);
-                        break;
-                    case Keys.S:
-                        player.dirY = player.isMovingUp ? player.dirY : 0;
-                        player.isMovingDown = false;
-                        if (player.isAlive && !player.IsMoving()) player.SetAnimation(0);
-                        break;
-                    case Keys.A:
-                        player.dirX = player.isMovingRight ? player.dirX : 0;
-                        player.isMovingLeft = false;
-                        if (player.isAlive && !player.IsMoving()) player.SetAnimation(1);
-                        break;
-                    case Keys.D:
-                        player.dirX = player.isMovingLeft ? player.dirX : 0;
-                        player.isMovingRight = false;
-                        if (player.isAlive && !player.IsMoving()) player.SetAnimation(1);
-                        break;
+                    switch (e.KeyCode)
+                    {
+                        case Keys.W:
+                            player.dirY = player.isMovingDown ? player.dirY : 0;
+                            player.isMovingUp = false;
+                            if (!player.IsMoving()) player.SetAnimation(2);
+                            break;
+                        case Keys.S:
+                            player.dirY = player.isMovingUp ? player.dirY : 0;
+                            player.isMovingDown = false;
+                            if (!player.IsMoving()) player.SetAnimation(0);
+                            break;
+                        case Keys.A:
+                            player.dirX = player.isMovingRight ? player.dirX : 0;
+                            player.isMovingLeft = false;
+                            if (!player.IsMoving()) player.SetAnimation(1);
+                            break;
+                        case Keys.D:
+                            player.dirX = player.isMovingLeft ? player.dirX : 0;
+                            player.isMovingRight = false;
+                            if (!player.IsMoving()) player.SetAnimation(1);
+                            break;
+                    }
                 }
             }
         }
@@ -151,11 +147,11 @@ namespace Game
                 Graphics g = e.Graphics;
                 g.InterpolationMode = InterpolationMode.NearestNeighbor;
 
-                int cameraX = player.posX - 1024 / 2;
-                int cameraY = player.posY - 768 / 2;
+                int cameraX = player.posX - WindowWidth / 2;
+                int cameraY = player.posY - WindowHeight / 2 + player.size / 2;
 
-                cameraX = Math.Max(0, Math.Min(map.GetWidth() - 1024, cameraX));
-                cameraY = Math.Max(0, Math.Min(map.GetHeight() - 768 + 25, cameraY));
+                cameraX = Math.Max(0, Math.Min(map.GetWidth() - WindowWidth, cameraX));
+                cameraY = Math.Max(0, Math.Min(map.GetHeight() - WindowHeight + 25, cameraY));
 
                 g.TranslateTransform(-cameraX, -cameraY);
 
@@ -185,7 +181,7 @@ namespace Game
             new MVC.Model();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1() { Size = new Size(1024, 768) });
+            Application.Run(new Form1() { Size = new Size(MVC.WindowWidth, MVC.WindowHeight) });
         }
     }
 }
