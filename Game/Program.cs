@@ -2,47 +2,35 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Game.Models;
-using System.IO;
 using System.Linq;
 using System.Drawing.Drawing2D;
+using Game.Levels;
+using System.IO;
+using System.Collections.Generic;
 
 namespace Game
 {
     public class MVC
     {
-        public static Entity slime;
-        public static Entity player;
-        public static MapController map;
+        public static Player player;
+        public static MapController mapController;
         public static int WindowWidth { get; set; }
         public static int WindowHeight { get; set; }
 
         public class Model
         {
-            public static Image playerSheet;
-            public static Image grassSprite;
-            public static Image plainsSheet;
-            public static Image slimeSheet;
-
+            public static List<IEntity> entities;
             public Model()
             {
                 WindowWidth = 1024;
                 WindowHeight = 768;
 
-                #region Textures
-                playerSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
-                    "Content\\characters\\player.png"));
-                grassSprite = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
-                    "Content\\tilesets\\grass.png"));
-                plainsSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
-                    "Content\\tilesets\\plains.png"));
-                slimeSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
-                    "Content\\characters\\slime.png"));
-                #endregion
+                Textures.LoadContent();
 
-                slime = new Entity(800, 800, new Slime(), slimeSheet);
-                player = new Entity(512, 256, new Player(), playerSheet);
+                player = new Player(800, 800, new PlayerModel(), Textures.playerSheet);
 
-                map = new MapController(grassSprite, plainsSheet);
+                mapController = new MapController(new LevelStart());
+                mapController.currentLevel.entities.Add(player);
             }
         }
 
@@ -82,20 +70,24 @@ namespace Game
                         case Keys.Up:
                             player.isAttack = true;
                             player.SetAnimation(8);
+                            player.Attack();
                             break;
                         case Keys.Down:
                             player.isAttack = true;
                             player.SetAnimation(6);
+                            player.Attack();
                             break;
                         case Keys.Left:
                             player.isAttack = true;
                             player.flip = -1;
                             player.SetAnimation(7);
+                            player.Attack();
                             break;
                         case Keys.Right:
                             player.isAttack = true;
                             player.flip = 1;
                             player.SetAnimation(7);
+                            player.Attack();
                             break;
                             #endregion
                     }
@@ -150,16 +142,16 @@ namespace Game
                 int cameraX = player.posX - WindowWidth / 2;
                 int cameraY = player.posY - WindowHeight / 2 + player.size / 2;
 
-                cameraX = Math.Max(0, Math.Min(map.GetWidth() - WindowWidth, cameraX));
-                cameraY = Math.Max(0, Math.Min(map.GetHeight() - WindowHeight + 25, cameraY));
+                cameraX = Math.Max(0, Math.Min(mapController.GetWidth() - WindowWidth, cameraX));
+                cameraY = Math.Max(0, Math.Min(mapController.GetHeight() - WindowHeight + 25, cameraY));
 
                 g.TranslateTransform(-cameraX, -cameraY);
 
-                map.DrawMap(g);
+                mapController.DrawMap(g);
 
-                Entity[] queqe = new Entity[] { player, slime };
+                Model.entities = new List<IEntity>(mapController.currentLevel.entities) { player };
 
-                foreach (var entity in queqe.OrderByDescending(x => x.posY))
+                foreach (var entity in Model.entities.OrderBy(x => x.posY + x.size + x.delta))
                 {
                     entity.PlayAnimation(g);
                 }

@@ -24,8 +24,10 @@ namespace Game
         {
             if (player.isAlive && player.IsMoving() && !player.isAttack)
             {
-                player.Move();
-                player.SetRunAnimation();
+                foreach (var entity in Model.entities)
+                {
+                    entity.Move();
+                }
             }
 
             Invalidate();

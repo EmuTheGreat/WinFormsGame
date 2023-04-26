@@ -52,13 +52,18 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entity.cs" />
+    <Compile Include="interfaces\IEntity.cs" />
+    <Compile Include="interfaces\ILevel.cs" />
+    <Compile Include="Levels\LevelStart.cs" />
     <Compile Include="MapController.cs" />
-    <Compile Include="Models\ICreature.cs" />
+    <Compile Include="interfaces\ICreature.cs" />
     <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\PlayerModel.cs" />
     <Compile Include="Models\Slime.cs" />
+    <Compile Include="Models\SlimeModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Textures.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
