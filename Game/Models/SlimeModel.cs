@@ -14,7 +14,7 @@
 
         int ICreature.attackFrames => 7;
 
-        int ICreature.deathFrames => 5;
+        int ICreature.deathFrames => 6;
 
         int ICreature.delta => 6;
     }

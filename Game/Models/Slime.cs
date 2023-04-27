@@ -85,9 +85,9 @@ namespace Game.Models
 
             if (!isAlive)
             {
-                if (!deathAnimationFlag) SetAnimation(9);
+                if (!deathAnimationFlag) SetAnimation(4);
                 deathAnimationFlag = true;
-                if (currentFrame == 3) --currentFrame;
+                if (currentFrame == 5) --currentFrame;
             }
 
             if (isAttack)
@@ -103,9 +103,7 @@ namespace Game.Models
 
         public void SetRunAnimation()
         {
-            if (isMovingRight || isMovingLeft) currentAnimation = 4;
-            if (isMovingUp) currentAnimation = 5;
-            else if (isMovingDown) currentAnimation = 3;
+            if (IsMoving()) currentAnimation = 1;
             currentLimit = runFrames;
         }
 
@@ -131,18 +129,10 @@ namespace Game.Models
 
             switch (currentAnimation)
             {
-                case 0:
-                case 1:
-                case 2:
-                    currentLimit = runFrames; break;
-                case 6:
-                case 7:
-                case 8:
-                    currentFrame = 0;
-                    currentLimit = attackFrames; break;
-                case 9:
-                    currentFrame = 0;
-                    currentLimit = deathFrames; break;
+                case 4:
+                    this.currentAnimation = currentAnimation;
+                    currentLimit = deathFrames;
+                    break;
             }
         }
 
