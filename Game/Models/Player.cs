@@ -41,6 +41,15 @@ namespace Game.Models
         public int delta { get; set; }
 
         public Image spriteSheet { get; set; }
+        public Rectangle hitBox => new Rectangle(posX + 70, posY + 86, 56, 82);
+
+        public Rectangle currentAttack;
+        public Rectangle attackUp => new Rectangle(posX + 56, posY + 104, 76, 20);
+        public Rectangle attackDown => new Rectangle(posX + 68, posY + 172, 76, 20);
+        public Rectangle attackRight => new Rectangle(posX + 108, posY + 132, 24, 44);
+        public Rectangle attackLeft => new Rectangle(posX, posY + 128, 24, 44);
+
+
         int currentTime = 0;
         int preiod = 5;
 
@@ -160,11 +169,9 @@ namespace Game.Models
 
         public void Attack()
         {
-            var attackZone = new Rectangle(player.posX + player.size, player.posY, player.size, player.size);
             foreach (var entity in Model.entities.Where(x => x.GetType() != typeof(Player)))
             {
-                var enemyBox = new Rectangle(entity.posX, entity.posY, entity.size, entity.size);
-                if (attackZone.IntersectsWith(enemyBox)) 
+                if (currentAttack.IntersectsWith(entity.hitBox))
                 {
                     entity.isAlive = false;
                 }

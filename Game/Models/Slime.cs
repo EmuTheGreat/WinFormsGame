@@ -40,6 +40,9 @@ namespace Game.Models
         public int delta { get; set; }
 
         public Image spriteSheet { get; set; }
+
+        public Rectangle hitBox => new Rectangle(posX + 36, posY + 48, 56, 44);
+
         int currentTime = 0;
         int preiod = 8;
 
@@ -130,6 +133,7 @@ namespace Game.Models
             switch (currentAnimation)
             {
                 case 4:
+                    currentFrame = 0;
                     this.currentAnimation = currentAnimation;
                     currentLimit = deathFrames;
                     break;

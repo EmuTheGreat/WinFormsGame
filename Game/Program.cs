@@ -70,23 +70,27 @@ namespace Game
                         case Keys.Up:
                             player.isAttack = true;
                             player.SetAnimation(8);
+                            player.currentAttack = player.attackUp;
                             player.Attack();
                             break;
                         case Keys.Down:
                             player.isAttack = true;
                             player.SetAnimation(6);
+                            player.currentAttack = player.attackDown;
                             player.Attack();
                             break;
                         case Keys.Left:
                             player.isAttack = true;
                             player.flip = -1;
                             player.SetAnimation(7);
+                            player.currentAttack = player.attackLeft;
                             player.Attack();
                             break;
                         case Keys.Right:
                             player.isAttack = true;
                             player.flip = 1;
                             player.SetAnimation(7);
+                            player.currentAttack = player.attackRight;
                             player.Attack();
                             break;
                             #endregion

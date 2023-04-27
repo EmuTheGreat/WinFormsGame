@@ -39,6 +39,7 @@ namespace Game
         int delta { get; set; }
 
         Image spriteSheet { get; set; }
+        Rectangle hitBox { get; }
 
         void Move();
 

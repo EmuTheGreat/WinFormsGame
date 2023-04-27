@@ -1,6 +1,7 @@
 ﻿using static Game.MVC;
 using System;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace Game
 {
@@ -24,7 +25,7 @@ namespace Game
         {
             if (player.isAlive && player.IsMoving() && !player.isAttack)
             {
-                foreach (var entity in Model.entities)
+                foreach (var entity in Model.entities.Where(x => x.isAlive))
                 {
                     entity.Move();
                 }
