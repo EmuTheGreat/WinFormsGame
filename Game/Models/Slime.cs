@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using static Game.MVC;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Game.Models
@@ -41,7 +43,7 @@ namespace Game.Models
 
         public Image spriteSheet { get; set; }
 
-        public Rectangle hitBox => new Rectangle(posX + 36, posY + 48, 56, 44);
+        public Rectangle hitBox => new Rectangle(posX - 26, posY + 52, 48, 36);
 
         int currentTime = 0;
         int preiod = 8;
@@ -66,10 +68,34 @@ namespace Game.Models
             delta = model.delta;
         }
 
-        public virtual void Move()
+        private void RandomMove()
         {
+            var randomBytes = new byte[4];
+            var rng = new RNGCryptoServiceProvider();
+            rng.GetBytes(randomBytes);
+            int randomNumber = BitConverter.ToInt32(randomBytes, 0);
+
+            var r = new Random(randomNumber);
+
+            if (r.Next(0, 1010) <= 50)
+            {
+                dirX = r.Next(-1, 2) * speed;
+                dirY = r.Next(-1, 2) * speed;
+            }
+        }
+
+        public void Update()
+        {
+            //if (Math.Sqrt(Math.Pow((hitBox.X + hitBox.Width / 2) - (player.hitBox.X + player.hitBox.Width / 2), 2)
+            //    + Math.Pow((hitBox.Y + hitBox.Top / 2) - (player.hitBox.Y + player.hitBox.Top / 2), 2)) < 300) StopEntity();
+            RandomMove();
+
+
             posX += dirX;
             posY += dirY;
+            //dirX = 0;
+            //dirY = 0;
+            Attack();
         }
 
         public bool IsMoving() => isMovingDown || isMovingUp || isMovingLeft || isMovingRight;
@@ -79,7 +105,7 @@ namespace Game.Models
             g.DrawImage(spriteSheet,
             new Rectangle(new Point(posX - flip * (size) / 2, posY), new Size(flip * size, size)),
             spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
-
+            g.DrawRectangle(new Pen(Color.Black), hitBox);
             if (++currentTime > preiod)
             {
                 currentTime = 0;
@@ -152,7 +178,7 @@ namespace Game.Models
 
         public void Attack()
         {
-            throw new NotImplementedException();
+            if (player.hitBox.IntersectsWith(hitBox)) player.isAlive = false;
         }
     }
 }

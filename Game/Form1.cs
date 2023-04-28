@@ -23,12 +23,9 @@ namespace Game
 
         public void Update(object sendler, EventArgs e)
         {
-            if (player.isAlive && player.IsMoving() && !player.isAttack)
+            foreach (var entity in Model.entities.Where(x => x.isAlive))
             {
-                foreach (var entity in Model.entities.Where(x => x.isAlive))
-                {
-                    entity.Move();
-                }
+                entity.Update();
             }
 
             Invalidate();

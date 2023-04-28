@@ -41,7 +41,7 @@ namespace Game
         Image spriteSheet { get; set; }
         Rectangle hitBox { get; }
 
-        void Move();
+        void Update();
 
         bool IsMoving();
 

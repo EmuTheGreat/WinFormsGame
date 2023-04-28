@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -41,14 +42,15 @@ namespace Game.Models
         public int delta { get; set; }
 
         public Image spriteSheet { get; set; }
-        public Rectangle hitBox => new Rectangle(posX + 70, posY + 86, 56, 82);
+        public Rectangle hitBox => new Rectangle(posX - 18, posY + 136, 36, 28);
 
         public Rectangle currentAttack;
-        public Rectangle attackUp => new Rectangle(posX + 56, posY + 104, 76, 20);
-        public Rectangle attackDown => new Rectangle(posX + 68, posY + 172, 76, 20);
-        public Rectangle attackRight => new Rectangle(posX + 108, posY + 132, 24, 44);
-        public Rectangle attackLeft => new Rectangle(posX, posY + 128, 24, 44);
+        public Rectangle attackUp => new Rectangle(posX - 38, posY + 90, 76, 20);
+        public Rectangle attackDown => new Rectangle(posX - 38, posY + 172, 76, 20);
+        public Rectangle attackRight => new Rectangle(posX + 36, posY + 128, 24, 44);
+        public Rectangle attackLeft => new Rectangle(posX - 60, posY + 128, 24, 44);
 
+        private static Point _minPos, _maxPos;
 
         int currentTime = 0;
         int preiod = 5;
@@ -73,11 +75,28 @@ namespace Game.Models
             delta = model.delta;
         }
 
-        public virtual void Move()
+        public void Update()
         {
-            posX += dirX;
-            posY += dirY;
-            SetRunAnimation();
+            if (player.isAlive && !player.isAttack)
+            {
+                posX = Clamp(posX += dirX, _minPos.X, _maxPos.X);
+                posY = Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
+
+                SetRunAnimation();
+            }
+        }
+
+        public static void SetBounds()
+        {
+            _minPos = new Point(MapController.cellSize + 20, -MapController.cellSize);
+            _maxPos = new Point(mapController.GetWidth() - 192 / 2, mapController.GetHeight() - 240);
+        }
+
+        public static int Clamp(int value, int min, int max)
+        {
+            value = ((value > max) ? max : value);
+            value = ((value < min) ? min : value);
+            return value;
         }
 
         public bool IsMoving() => isMovingDown || isMovingUp || isMovingLeft || isMovingRight;
@@ -88,6 +107,8 @@ namespace Game.Models
             new Rectangle(new Point(posX - flip * (size) / 2, posY), new Size(flip * size, size)),
             spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
 
+            g.DrawRectangle(new Pen(Color.Black), hitBox);
+            g.DrawRectangle(new Pen(Color.Black), currentAttack);
             if (++currentTime > preiod)
             {
                 currentTime = 0;
@@ -171,6 +192,7 @@ namespace Game.Models
         {
             foreach (var entity in Model.entities.Where(x => x.GetType() != typeof(Player)))
             {
+
                 if (currentAttack.IntersectsWith(entity.hitBox))
                 {
                     entity.isAlive = false;

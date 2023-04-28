@@ -7,6 +7,7 @@ using System.Drawing.Drawing2D;
 using Game.Levels;
 using System.IO;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Game
 {
@@ -24,12 +25,11 @@ namespace Game
             {
                 WindowWidth = 1024;
                 WindowHeight = 768;
-
                 Textures.LoadContent();
 
                 player = new Player(800, 800, new PlayerModel(), Textures.playerSheet);
-
                 mapController = new MapController(new LevelStart());
+                Player.SetBounds();
                 mapController.currentLevel.entities.Add(player);
             }
         }
@@ -107,7 +107,7 @@ namespace Game
 
             public static void KeyUp(object sender, KeyEventArgs e)
             {
-                if (player.isAlive)
+                if (player.isAlive && !player.isAttack)
                 {
                     switch (e.KeyCode)
                     {
