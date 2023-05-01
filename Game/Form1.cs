@@ -2,6 +2,8 @@
 using System;
 using System.Windows.Forms;
 using System.Linq;
+using Game.Models;
+using Game.Objects;
 
 namespace Game
 {
@@ -12,6 +14,7 @@ namespace Game
             InitializeComponent();
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
+            
 
             timer1.Interval = 5;
             timer1.Tick += new EventHandler(Update);
@@ -23,11 +26,10 @@ namespace Game
 
         public void Update(object sendler, EventArgs e)
         {
-            foreach (var entity in Model.entities.Where(x => x.isAlive))
+            foreach (var entity in Model.entities.Where(x => x.isAlive && x.GetType() != typeof(Tree)))
             {
                 entity.Update();
             }
-
             Invalidate();
         }
     }

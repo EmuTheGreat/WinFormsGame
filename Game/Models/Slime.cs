@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Game.interfaces;
 
 namespace Game.Models
 {
@@ -37,13 +38,17 @@ namespace Game.Models
         public int deathFrames { get; set; }
 
         public int spriteSize { get; set; }
-        public int size { get; set; }
+        public int sizeX { get; set; }
+        public int sizeY { get; set; }
         public int flip { get; set; }
         public int delta { get; set; }
 
         public Image spriteSheet { get; set; }
-
+        private static Point _minPos, _maxPos;
         public Rectangle hitBox => new Rectangle(posX - 26, posY + 52, 48, 36);
+        public Rectangle position => new Rectangle(posX, posY, sizeX, sizeX);
+        public Rectangle collisionBox { get; }
+        public Rectangle spriteSrc { get; }
 
         int currentTime = 0;
         int preiod = 8;
@@ -57,7 +62,8 @@ namespace Game.Models
             runFrames = model.runFrames;
             attackFrames = model.attackFrames;
             deathFrames = model.deathFrames;
-            size = model.size;
+            sizeX = model.size;
+            sizeY = model.size;
             spriteSize = model.spriteSize;
             speed = model.speed;
             currentLimit = idleFrames;
@@ -84,18 +90,22 @@ namespace Game.Models
             }
         }
 
+        public static void SetBounds()
+        {
+            _minPos = new Point(MapController.cellSize + 22, -MapController.cellSize + 64);
+            _maxPos = new Point(mapController.GetWidth() - 128 / 2 - 32, mapController.GetHeight() - 160);
+        }
+
         public void Update()
         {
-            //if (Math.Sqrt(Math.Pow((hitBox.X + hitBox.Width / 2) - (player.hitBox.X + player.hitBox.Width / 2), 2)
-            //    + Math.Pow((hitBox.Y + hitBox.Top / 2) - (player.hitBox.Y + player.hitBox.Top / 2), 2)) < 300) StopEntity();
+            if (Math.Sqrt(Math.Pow((hitBox.X + hitBox.Width / 2) - (player.hitBox.X + player.hitBox.Width / 2), 2)
+                + Math.Pow((hitBox.Y + hitBox.Top / 2) - (player.hitBox.Y + player.hitBox.Top / 2), 2)) < 300) StopEntity();
             RandomMove();
 
+            posX = Player.Clamp(posX += dirX, _minPos.X, _maxPos.X);
+            posY = Player.Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
 
-            posX += dirX;
-            posY += dirY;
-            //dirX = 0;
-            //dirY = 0;
-            Attack();
+            //Attack();
         }
 
         public bool IsMoving() => isMovingDown || isMovingUp || isMovingLeft || isMovingRight;
@@ -103,9 +113,10 @@ namespace Game.Models
         public void PlayAnimation(Graphics g)
         {
             g.DrawImage(spriteSheet,
-            new Rectangle(new Point(posX - flip * (size) / 2, posY), new Size(flip * size, size)),
+            new Rectangle(new Point(posX - flip * (sizeX) / 2, posY), new Size(flip * sizeX, sizeX)),
             spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
             g.DrawRectangle(new Pen(Color.Black), hitBox);
+
             if (++currentTime > preiod)
             {
                 currentTime = 0;

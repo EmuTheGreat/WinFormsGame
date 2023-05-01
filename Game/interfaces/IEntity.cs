@@ -34,10 +34,12 @@ namespace Game
         int deathFrames { get; set; }
 
         int spriteSize { get; set; }
-        int size { get; set; }
+        int sizeX { get; set; }
+        int sizeY { get; set; }
         int flip { get; set; }
         int delta { get; set; }
 
+        Rectangle position { get; }
         Image spriteSheet { get; set; }
         Rectangle hitBox { get; }
 

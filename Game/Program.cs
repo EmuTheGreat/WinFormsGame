@@ -8,6 +8,8 @@ using Game.Levels;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading;
+using Game.interfaces;
+using Game.Objects;
 
 namespace Game
 {
@@ -27,9 +29,10 @@ namespace Game
                 WindowHeight = 768;
                 Textures.LoadContent();
 
-                player = new Player(800, 800, new PlayerModel(), Textures.playerSheet);
+                player = new Player(300, 200, new PlayerModel(), Textures.playerSheet);
                 mapController = new MapController(new LevelStart());
                 Player.SetBounds();
+                Slime.SetBounds();
                 mapController.currentLevel.entities.Add(player);
             }
         }
@@ -144,7 +147,7 @@ namespace Game
                 g.InterpolationMode = InterpolationMode.NearestNeighbor;
 
                 int cameraX = player.posX - WindowWidth / 2;
-                int cameraY = player.posY - WindowHeight / 2 + player.size / 2;
+                int cameraY = player.posY - WindowHeight / 2 + player.sizeX / 2;
 
                 cameraX = Math.Max(0, Math.Min(mapController.GetWidth() - WindowWidth, cameraX));
                 cameraY = Math.Max(0, Math.Min(mapController.GetHeight() - WindowHeight + 25, cameraY));
@@ -155,7 +158,7 @@ namespace Game
 
                 Model.entities = new List<IEntity>(mapController.currentLevel.entities) { player };
 
-                foreach (var entity in Model.entities.OrderBy(x => x.posY + x.size + x.delta))
+                foreach (var entity in Model.entities.OrderBy(x => x.posY + x.sizeY + x.delta))
                 {
                     entity.PlayAnimation(g);
                 }

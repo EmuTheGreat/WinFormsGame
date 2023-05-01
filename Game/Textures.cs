@@ -9,6 +9,8 @@ namespace Game
         public static Image grassSprite;
         public static Image plainsSheet;
         public static Image slimeSheet;
+        public static Image objectsSheet;
+        public static Image decorSheet;
 
         public static void LoadContent()
         {
@@ -20,6 +22,10 @@ namespace Game
                 "Content\\tilesets\\plains.png"));
             slimeSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
                 "Content\\characters\\slime.png"));
+            decorSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
+                "Content\\tilesets\\decor_16x16.png"));
+            objectsSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
+                "Content\\objects\\objects.png"));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Game.interfaces;
+using Game.Objects;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
@@ -37,7 +39,8 @@ namespace Game.Models
         public int deathFrames { get; set; }
 
         public int spriteSize { get; set; }
-        public int size { get; set; }
+        public int sizeX { get; set; }
+        public int sizeY { get; set; }
         public int flip { get; set; }
         public int delta { get; set; }
 
@@ -49,6 +52,10 @@ namespace Game.Models
         public Rectangle attackDown => new Rectangle(posX - 38, posY + 172, 76, 20);
         public Rectangle attackRight => new Rectangle(posX + 36, posY + 128, 24, 44);
         public Rectangle attackLeft => new Rectangle(posX - 60, posY + 128, 24, 44);
+
+        public Rectangle position => new Rectangle(posX, posY, sizeX, sizeX);
+        public Rectangle collisionBox { get; }
+        public Rectangle spriteSrc { get; }
 
         private static Point _minPos, _maxPos;
 
@@ -64,7 +71,8 @@ namespace Game.Models
             runFrames = model.runFrames;
             attackFrames = model.attackFrames;
             deathFrames = model.deathFrames;
-            size = model.size;
+            sizeX = model.size;
+            sizeY = model.size;
             spriteSize = model.spriteSize;
             speed = model.speed;
             currentLimit = idleFrames;
@@ -77,10 +85,30 @@ namespace Game.Models
 
         public void Update()
         {
+            var flag1 = true;
+            var flag2 = true;
             if (player.isAlive && !player.isAttack)
             {
-                posX = Clamp(posX += dirX, _minPos.X, _maxPos.X);
-                posY = Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
+                //posX = Clamp(posX += dirX, _minPos.X, _maxPos.X);
+                //posY = Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
+                foreach (var e in mapController.currentLevel.entities.Where(x =>
+                {
+                    var type = x.GetType();
+                    return type == typeof(Tree);
+                }))
+                {
+                    if (new Rectangle(hitBox.X + dirX, hitBox.Y, hitBox.Width, hitBox.Height).IntersectsWith(e.hitBox))
+                    {
+                        flag1 = false;
+                    }
+                    if (new Rectangle(hitBox.X, hitBox.Y + dirY, hitBox.Width, hitBox.Height).IntersectsWith(e.hitBox))
+                    {
+                        flag2 = false;
+                    }
+                }
+
+                if (flag1) posX = Clamp(posX += dirX, _minPos.X, _maxPos.X);
+                if (flag2) posY = Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
 
                 SetRunAnimation();
             }
@@ -91,6 +119,14 @@ namespace Game.Models
             _minPos = new Point(MapController.cellSize + 20, -MapController.cellSize);
             _maxPos = new Point(mapController.GetWidth() - 192 / 2, mapController.GetHeight() - 240);
         }
+
+        public static int Collision(int value, int min, int max)
+        {
+            value = ((value < max) ? max : value);
+            value = ((value > min) ? min : value);
+            return value;
+        }
+
 
         public static int Clamp(int value, int min, int max)
         {
@@ -103,12 +139,12 @@ namespace Game.Models
 
         public void PlayAnimation(Graphics g)
         {
-            g.DrawImage(spriteSheet,
-            new Rectangle(new Point(posX - flip * (size) / 2, posY), new Size(flip * size, size)),
+            g.DrawImage(Textures.playerSheet,
+            new Rectangle(new Point(posX - flip * (sizeX) / 2, posY), new Size(flip * sizeX, sizeX)),
             spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
-
             g.DrawRectangle(new Pen(Color.Black), hitBox);
             g.DrawRectangle(new Pen(Color.Black), currentAttack);
+            
             if (++currentTime > preiod)
             {
                 currentTime = 0;
