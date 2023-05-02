@@ -4,7 +4,7 @@
     {
         public int size => 128;
 
-        public int speed => 2;
+        public int speed => 4;
 
         public int spriteSize => 32;
 

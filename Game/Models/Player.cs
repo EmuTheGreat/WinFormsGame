@@ -1,12 +1,7 @@
-﻿using Game.interfaces;
-using Game.Objects;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using Game.Objects;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using static Game.MVC;
 
 namespace Game.Models
@@ -14,7 +9,8 @@ namespace Game.Models
     public class Player : IEntity
     {
         public int healthPoint { get; set; }
-        public bool isAlive { get; set; }
+        public bool isAlive { get { return healthPoint > 0; } set { healthPoint = 3; } }
+        public bool isImmunity { get; set; }
 
         public float posX { get; set; }
         public float posY { get; set; }
@@ -72,18 +68,26 @@ namespace Game.Models
             sizeY = model.size;
             spriteSize = model.spriteSize;
             speed = model.speed;
+            delta = model.delta;
             currentLimit = idleFrames;
-            currentAnimation = 0;
-            currentFrame = 0;
             flip = 1;
             isAlive = true;
-            delta = model.delta;
+            healthPoint = 3;
         }
 
         public void Update()
         {
+            var immunity = new Thread(() =>
+            {
+                Thread.Sleep(2500);
+                isImmunity = false;
+            });
+            
+            if (isImmunity) immunity.Start();
+
             var flag1 = true;
             var flag2 = true;
+
             if (player.isAlive && !player.isAttack)
             {
                 foreach (var e in mapController.currentLevel.entities.Where(x =>

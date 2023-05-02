@@ -61,21 +61,18 @@ namespace Game.Models
             sizeX = model.size;
             sizeY = model.size;
             spriteSize = model.spriteSize;
-            speed = 1;
+            speed = model.speed;
+            delta = model.delta;
             currentLimit = idleFrames;
-            currentAnimation = 0;
-            currentFrame = 0;
             flip = 1;
             isAlive = true;
-            delta = model.delta;
         }
-
 
         private void Move()
         {
             Vector2 direction = Vector2.Normalize(new Vector2(player.collisionBox.Right / 2 - collisionBox.Right / 2,
                 player.collisionBox.Bottom / 2 - collisionBox.Bottom / 2));
-            Vector2 velocity = direction * 4;
+            Vector2 velocity = direction * speed;
             dirX = velocity.X;
             dirY = velocity.Y;
         }
@@ -90,16 +87,15 @@ namespace Game.Models
         {
             var flag1 = true;
             var flag2 = true;
-            
-            flip = player.collisionBox.Right / 2 > collisionBox.Right / 2 ? 1 : -1;
-            if (++attackTime > attackPeriod && !isAttack && GetDistance(collisionBox, player.collisionBox) < 150) 
+
+            if (++attackTime > attackPeriod && !isAttack && GetDistance(collisionBox, player.collisionBox) < 130)
             {
                 SetAnimation(2);
-                isAttack = true;
                 Move();
+                flip = player.collisionBox.Right / 2 > collisionBox.Right / 2 ? 1 : -1;
+                isAttack = true;
                 attackTime = 0;
             }
-            
 
             foreach (var e in mapController.currentLevel.entities.Where(x =>
             {
@@ -205,8 +201,11 @@ namespace Game.Models
 
         public void Attack()
         {
-            if (player.collisionBox.IntersectsWith(collisionBox)) player.isAlive = false;
-
+            if (!player.isImmunity && player.collisionBox.IntersectsWith(collisionBox))
+            {
+                player.isImmunity = true;
+                player.healthPoint--;
+            }
         }
     }
 }
