@@ -2,11 +2,8 @@
 using static Game.MVC;
 using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Game.interfaces;
+using Game.Objects;
+using System.Numerics;
 
 namespace Game.Models
 {
@@ -15,11 +12,11 @@ namespace Game.Models
         public int healthPoint { get; set; }
         public bool isAlive { get; set; }
 
-        public int posX { get; set; }
-        public int posY { get; set; }
+        public float posX { get; set; }
+        public float posY { get; set; }
 
-        public int dirX { get; set; }
-        public int dirY { get; set; }
+        public float dirX { get; set; }
+        public float dirY { get; set; }
         public int speed { get; set; }
 
         public bool isMovingLeft { get; set; }
@@ -43,21 +40,20 @@ namespace Game.Models
         public int flip { get; set; }
         public int delta { get; set; }
 
-        public Image spriteSheet { get; set; }
         private static Point _minPos, _maxPos;
-        public Rectangle hitBox => new Rectangle(posX - 26, posY + 52, 48, 36);
-        public Rectangle position => new Rectangle(posX, posY, sizeX, sizeX);
-        public Rectangle collisionBox { get; }
-        public Rectangle spriteSrc { get; }
+        public RectangleF collisionBox => new RectangleF(posX - 26, posY + 52, 48, 36);
+        public RectangleF position => new RectangleF(posX, posY, sizeX, sizeY);
+        public RectangleF spriteSrc => new RectangleF(spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize);
 
-        int currentTime = 0;
-        int preiod = 8;
+        private int currentTime = 0;
+        private int period = 8;
+        private int attackTime = 20;
+        private int attackPeriod = 100;
 
-        public Slime(int posX, int posY, ICreature model, Image spriteSheet)
+        public Slime(int posX, int posY, ICreature model)
         {
             this.posX = posX;
             this.posY = posY;
-            this.spriteSheet = spriteSheet;
             idleFrames = model.idleFrames;
             runFrames = model.runFrames;
             attackFrames = model.attackFrames;
@@ -65,7 +61,7 @@ namespace Game.Models
             sizeX = model.size;
             sizeY = model.size;
             spriteSize = model.spriteSize;
-            speed = model.speed;
+            speed = 1;
             currentLimit = idleFrames;
             currentAnimation = 0;
             currentFrame = 0;
@@ -74,50 +70,70 @@ namespace Game.Models
             delta = model.delta;
         }
 
-        private void RandomMove()
+
+        private void Move()
         {
-            var randomBytes = new byte[4];
-            var rng = new RNGCryptoServiceProvider();
-            rng.GetBytes(randomBytes);
-            int randomNumber = BitConverter.ToInt32(randomBytes, 0);
-
-            var r = new Random(randomNumber);
-
-            if (r.Next(0, 1010) <= 50)
-            {
-                dirX = r.Next(-1, 2) * speed;
-                dirY = r.Next(-1, 2) * speed;
-            }
+            Vector2 direction = Vector2.Normalize(new Vector2(player.collisionBox.Right / 2 - collisionBox.Right / 2,
+                player.collisionBox.Bottom / 2 - collisionBox.Bottom / 2));
+            Vector2 velocity = direction * 4;
+            dirX = velocity.X;
+            dirY = velocity.Y;
         }
 
-        public static void SetBounds()
+        public double GetDistance(RectangleF rS, RectangleF rP)
         {
-            _minPos = new Point(MapController.cellSize + 22, -MapController.cellSize + 64);
-            _maxPos = new Point(mapController.GetWidth() - 128 / 2 - 32, mapController.GetHeight() - 160);
+            return Math.Sqrt(Math.Pow((rS.Right / 2) - (rP.Right / 2), 2)
+               + Math.Pow(rS.Bottom / 2 - (rP.Bottom / 2), 2));
         }
 
         public void Update()
         {
-            if (Math.Sqrt(Math.Pow((hitBox.X + hitBox.Width / 2) - (player.hitBox.X + player.hitBox.Width / 2), 2)
-                + Math.Pow((hitBox.Y + hitBox.Top / 2) - (player.hitBox.Y + player.hitBox.Top / 2), 2)) < 300) StopEntity();
-            RandomMove();
+            var flag1 = true;
+            var flag2 = true;
+            
+            flip = player.collisionBox.Right / 2 > collisionBox.Right / 2 ? 1 : -1;
+            if (++attackTime > attackPeriod && !isAttack && GetDistance(collisionBox, player.collisionBox) < 150) 
+            {
+                SetAnimation(2);
+                isAttack = true;
+                Move();
+                attackTime = 0;
+            }
+            
 
-            posX = Player.Clamp(posX += dirX, _minPos.X, _maxPos.X);
-            posY = Player.Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
+            foreach (var e in mapController.currentLevel.entities.Where(x =>
+            {
+                var type = x.GetType();
+                return type == typeof(Tree);
+            }))
+            #region
+            {
+                if (new RectangleF(collisionBox.X + dirX, collisionBox.Y, collisionBox.Width, collisionBox.Height).IntersectsWith(e.collisionBox))
+                {
+                    flag1 = false;
+                }
+                if (new RectangleF(collisionBox.X, collisionBox.Y + dirY, collisionBox.Width, collisionBox.Height).IntersectsWith(e.collisionBox))
+                {
+                    flag2 = false;
+                }
+            }
+            #endregion
 
-            //Attack();
+            if (flag1) posX = Player.Clamp(posX += dirX, _minPos.X, _maxPos.X);
+            if (flag2) posY = Player.Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
+
+            Attack();
         }
 
         public bool IsMoving() => isMovingDown || isMovingUp || isMovingLeft || isMovingRight;
 
         public void PlayAnimation(Graphics g)
         {
-            g.DrawImage(spriteSheet,
-            new Rectangle(new Point(posX - flip * (sizeX) / 2, posY), new Size(flip * sizeX, sizeX)),
-            spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
-            g.DrawRectangle(new Pen(Color.Black), hitBox);
+            g.DrawImage(Textures.slimeSheet,
+            new RectangleF(new PointF(posX - flip * (sizeX) / 2, posY), new Size(flip * sizeX, sizeX)),
+            spriteSrc, GraphicsUnit.Pixel);
 
-            if (++currentTime > preiod)
+            if (++currentTime > period)
             {
                 currentTime = 0;
                 currentFrame = ++currentFrame % currentLimit;
@@ -132,11 +148,11 @@ namespace Game.Models
 
             if (isAttack)
             {
-                StopEntity();
-                if (currentFrame == 3)
+                if (currentFrame == attackFrames - 1)
                 {
                     isAttack = false;
-                    SetAnimationAfterAttack();
+                    StopEntity();
+                    SetAnimation(0);
                 }
             }
         }
@@ -147,20 +163,10 @@ namespace Game.Models
             currentLimit = runFrames;
         }
 
-        public void SetAnimationAfterAttack()
+        public static void SetBounds()
         {
-            switch (currentAnimation)
-            {
-                case 8:
-                    SetAnimation(2);
-                    break;
-                case 6:
-                    SetAnimation(0);
-                    break;
-                case 7:
-                    SetAnimation(1);
-                    break;
-            }
+            _minPos = new Point(MapController.cellSize + 22, -MapController.cellSize + 64);
+            _maxPos = new Point(mapController.GetWidth() - 128 / 2 - 32, mapController.GetHeight() - 160);
         }
 
         public void SetAnimation(int currentAnimation)
@@ -169,10 +175,20 @@ namespace Game.Models
 
             switch (currentAnimation)
             {
+                case 0:
+                    currentFrame = 0;
+                    this.currentAnimation = currentAnimation;
+                    currentLimit = idleFrames;
+                    break;
                 case 4:
                     currentFrame = 0;
                     this.currentAnimation = currentAnimation;
                     currentLimit = deathFrames;
+                    break;
+                case 2:
+                    currentFrame = 0;
+                    this.currentAnimation = currentAnimation;
+                    currentLimit = attackFrames;
                     break;
             }
         }
@@ -189,7 +205,8 @@ namespace Game.Models
 
         public void Attack()
         {
-            if (player.hitBox.IntersectsWith(hitBox)) player.isAlive = false;
+            if (player.collisionBox.IntersectsWith(collisionBox)) player.isAlive = false;
+
         }
     }
 }

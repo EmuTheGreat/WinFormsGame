@@ -15,9 +15,9 @@ namespace Game.Levels
 
         public LevelStart()
         {
-            slime1 = new Slime(500, 500, new SlimeModel(), Textures.slimeSheet);
-            slime2 = new Slime(800, 800, new SlimeModel(), Textures.slimeSheet);
-            slime3 = new Slime(800, 800, new SlimeModel(), Textures.slimeSheet);
+            slime1 = new Slime(500, 500, new SlimeModel());
+            slime2 = new Slime(800, 800, new SlimeModel());
+            slime3 = new Slime(700, 800, new SlimeModel());
         }
 
         public int[,] map => new int[height, width]
@@ -53,6 +53,6 @@ namespace Game.Levels
         public int mapWidth => width;
         public int mapHeight => height;
         public List<IEntity> entities => 
-            new List<IEntity> { new Tree(new Point(800, 800)),slime1, slime2, new Tree(new Point(1200, 1200))};
+            new List<IEntity> { new Tree(new Point(800, 800)),slime1, slime2, new Tree(new Point(1200, 1200)), slime3};
     }
 }

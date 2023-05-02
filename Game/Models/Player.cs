@@ -16,11 +16,11 @@ namespace Game.Models
         public int healthPoint { get; set; }
         public bool isAlive { get; set; }
 
-        public int posX { get; set; }
-        public int posY { get; set; }
+        public float posX { get; set; }
+        public float posY { get; set; }
 
-        public int dirX { get; set; }
-        public int dirY { get; set; }
+        public float dirX { get; set; }
+        public float dirY { get; set; }
         public int speed { get; set; }
 
         public bool isMovingLeft { get; set; }
@@ -44,29 +44,26 @@ namespace Game.Models
         public int flip { get; set; }
         public int delta { get; set; }
 
-        public Image spriteSheet { get; set; }
-        public Rectangle hitBox => new Rectangle(posX - 18, posY + 136, 36, 28);
+        public RectangleF collisionBox => new RectangleF(posX - 18, posY + 136, 36, 28);
 
-        public Rectangle currentAttack;
-        public Rectangle attackUp => new Rectangle(posX - 38, posY + 90, 76, 20);
-        public Rectangle attackDown => new Rectangle(posX - 38, posY + 172, 76, 20);
-        public Rectangle attackRight => new Rectangle(posX + 36, posY + 128, 24, 44);
-        public Rectangle attackLeft => new Rectangle(posX - 60, posY + 128, 24, 44);
+        public RectangleF currentAttack;
+        public RectangleF attackUp => new RectangleF(posX - 38, posY + 90, 76, 20);
+        public RectangleF attackDown => new RectangleF(posX - 38, posY + 172, 76, 20);
+        public RectangleF attackRight => new RectangleF(posX + 36, posY + 128, 24, 44);
+        public RectangleF attackLeft => new RectangleF(posX - 60, posY + 128, 24, 44);
 
-        public Rectangle position => new Rectangle(posX, posY, sizeX, sizeX);
-        public Rectangle collisionBox { get; }
-        public Rectangle spriteSrc { get; }
+        public RectangleF position => new RectangleF(posX, posY, sizeX, sizeY);
+        public Rectangle spriteSrc => new Rectangle(spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize);
 
         private static Point _minPos, _maxPos;
 
         int currentTime = 0;
         int preiod = 5;
 
-        public Player(int posX, int posY, ICreature model, Image spriteSheet)
+        public Player(int posX, int posY, ICreature model)
         {
             this.posX = posX;
             this.posY = posY;
-            this.spriteSheet = spriteSheet;
             idleFrames = model.idleFrames;
             runFrames = model.runFrames;
             attackFrames = model.attackFrames;
@@ -89,19 +86,17 @@ namespace Game.Models
             var flag2 = true;
             if (player.isAlive && !player.isAttack)
             {
-                //posX = Clamp(posX += dirX, _minPos.X, _maxPos.X);
-                //posY = Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
                 foreach (var e in mapController.currentLevel.entities.Where(x =>
                 {
                     var type = x.GetType();
                     return type == typeof(Tree);
                 }))
                 {
-                    if (new Rectangle(hitBox.X + dirX, hitBox.Y, hitBox.Width, hitBox.Height).IntersectsWith(e.hitBox))
+                    if (new RectangleF(collisionBox.X + dirX, collisionBox.Y, collisionBox.Width, collisionBox.Height).IntersectsWith(e.collisionBox))
                     {
                         flag1 = false;
                     }
-                    if (new Rectangle(hitBox.X, hitBox.Y + dirY, hitBox.Width, hitBox.Height).IntersectsWith(e.hitBox))
+                    if (new RectangleF(collisionBox.X, collisionBox.Y + dirY, collisionBox.Width, collisionBox.Height).IntersectsWith(e.collisionBox))
                     {
                         flag2 = false;
                     }
@@ -120,18 +115,10 @@ namespace Game.Models
             _maxPos = new Point(mapController.GetWidth() - 192 / 2, mapController.GetHeight() - 240);
         }
 
-        public static int Collision(int value, int min, int max)
+        public static float Clamp(float value, float min, float max)
         {
-            value = ((value < max) ? max : value);
-            value = ((value > min) ? min : value);
-            return value;
-        }
-
-
-        public static int Clamp(int value, int min, int max)
-        {
-            value = ((value > max) ? max : value);
-            value = ((value < min) ? min : value);
+            value = (value > max) ? max : value;
+            value = (value < min) ? min : value;
             return value;
         }
 
@@ -140,11 +127,10 @@ namespace Game.Models
         public void PlayAnimation(Graphics g)
         {
             g.DrawImage(Textures.playerSheet,
-            new Rectangle(new Point(posX - flip * (sizeX) / 2, posY), new Size(flip * sizeX, sizeX)),
-            spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
-            g.DrawRectangle(new Pen(Color.Black), hitBox);
-            g.DrawRectangle(new Pen(Color.Black), currentAttack);
-            
+            new RectangleF(new PointF(posX - flip * sizeX / 2, posY), new Size(flip * sizeX, sizeX)),
+            spriteSrc, GraphicsUnit.Pixel);
+            //g.DrawRectangle(new Pen(Color.Black),collisionBox);
+
             if (++currentTime > preiod)
             {
                 currentTime = 0;
@@ -229,7 +215,7 @@ namespace Game.Models
             foreach (var entity in Model.entities.Where(x => x.GetType() != typeof(Player)))
             {
 
-                if (currentAttack.IntersectsWith(entity.hitBox))
+                if (currentAttack.IntersectsWith(entity.collisionBox))
                 {
                     entity.isAlive = false;
                 }

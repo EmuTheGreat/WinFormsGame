@@ -13,11 +13,11 @@ namespace Game.Objects
         public int healthPoint { get; set; }
         public bool isAlive { get; set; }
 
-        public int posX { get; set; }
-        public int posY { get; set; }
+        public float posX { get; set; }
+        public float posY { get; set; }
 
-        public int dirX { get; set; }
-        public int dirY { get; set; }
+        public float dirX { get; set; }
+        public float dirY { get; set; }
         public int speed { get; set; }
 
         public bool isMovingLeft { get; }
@@ -40,9 +40,8 @@ namespace Game.Objects
         public int sizeY { get; set; }
         public int flip { get; set; }
         public int delta { get; set; }
-        public Image spriteSheet { get; set; }
-        public Rectangle hitBox { get; }
-        public Rectangle position { get; set; }
+        public RectangleF collisionBox { get; }
+        public RectangleF position { get; set; }
 
         public Tree(Point position)
         {
@@ -50,8 +49,8 @@ namespace Game.Objects
             posY = position.Y;
             sizeX = 192;
             sizeY = 256;
-            this.position = new Rectangle(position, new Size(sizeX, sizeY));
-            hitBox = new Rectangle(position.X + 48, position.Y + 174, 96, 56);
+            this.position = new RectangleF(position, new Size(sizeX, sizeY));
+            collisionBox = new RectangleF(position.X + 48, position.Y + 174, 96, 56);
             delta = 10;
         }
 
@@ -63,7 +62,7 @@ namespace Game.Objects
         {
             DrawObject(Textures.objectsSheet, position, new Rectangle(new Point(0, 80), new Size(46, 64)), g);
         }
-        private void DrawObject(Image image, Rectangle rect, Rectangle rectSrc, Graphics g)
+        private void DrawObject(Image image, RectangleF rect, Rectangle rectSrc, Graphics g)
         {
             g.DrawImage(image, rect, rectSrc, GraphicsUnit.Pixel);
         }

@@ -26,9 +26,12 @@ namespace Game
 
         public void Update(object sendler, EventArgs e)
         {
-            foreach (var entity in Model.entities.Where(x => x.isAlive && x.GetType() != typeof(Tree)))
+            if (player.isAlive)
             {
-                entity.Update();
+                foreach (var entity in Model.entities.Where(x => x.isAlive && x.GetType() != typeof(Tree)))
+                {
+                    entity.Update();
+                }
             }
             Invalidate();
         }

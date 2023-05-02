@@ -11,11 +11,11 @@ namespace Game
         int healthPoint { get; set; }
         bool isAlive { get; set; }
 
-        int posX { get; set; }
-        int posY { get; set; }
+        float posX { get; set; }
+        float posY { get; set; }
 
-        int dirX { get; set; }
-        int dirY { get; set; }
+        float dirX { get; set; }
+        float dirY { get; set; }
         int speed { get; set; }
 
         bool isMovingLeft { get; }
@@ -39,9 +39,8 @@ namespace Game
         int flip { get; set; }
         int delta { get; set; }
 
-        Rectangle position { get; }
-        Image spriteSheet { get; set; }
-        Rectangle hitBox { get; }
+        RectangleF position { get; }
+        RectangleF collisionBox { get; }
 
         void Update();
 
@@ -50,8 +49,6 @@ namespace Game
         void PlayAnimation(Graphics g);
 
         void SetRunAnimation();
-
-        void SetAnimationAfterAttack();
 
         void SetAnimation(int currentAnimation);
 
