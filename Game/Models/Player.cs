@@ -1,6 +1,7 @@
 ﻿using Game.Objects;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Timers;
 using static Game.MVC;
 
@@ -8,8 +9,8 @@ namespace Game.Models
 {
     public class Player : IEntity
     {
-        public int healthPoint { get; set; }
-        public bool isAlive { get { return healthPoint > 0; } set { healthPoint = 1; } }
+        public ProgressBar healthPoint { get; set; }
+        public bool isAlive { get { return healthPoint.currentValue > 0; } set { healthPoint.currentValue = 1; } }
         public bool isImmunity { get; set; }
 
         public float posX { get; set; }
@@ -48,7 +49,7 @@ namespace Game.Models
         public RectangleF attackRight => new RectangleF(posX + 36, posY + 128, 24, 44);
         public RectangleF attackLeft => new RectangleF(posX - 60, posY + 128, 24, 44);
 
-        public RectangleF position => new RectangleF(posX, posY, sizeX, sizeY);
+        public RectangleF position => new RectangleF(posX - flip * sizeX / 2, posY, flip * sizeX, sizeY);
         public Rectangle spriteSrc => new Rectangle(spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize);
 
         private static Point _minPos, _maxPos;
@@ -56,7 +57,7 @@ namespace Game.Models
         int currentTime = 0;
         int preiod = 5;
 
-        private Timer immunityTimer = new Timer(1500);
+        private Timer immunityTimer = new Timer(500);
 
         public Player(int posX, int posY, ICreature model)
         {
@@ -73,8 +74,7 @@ namespace Game.Models
             delta = model.delta;
             currentLimit = idleFrames;
             flip = 1;
-            isAlive = true;
-            healthPoint = 3;
+            healthPoint = new ProgressBar(Textures.healthBarBackground, Textures.healthBarForeground, 100, new PointF(WindowWidth - 70, WindowHeight - 220));
             immunityTimer.Elapsed += ImmunityTimer_Elapsed;
         }
 
@@ -136,10 +136,9 @@ namespace Game.Models
 
         public void PlayAnimation(Graphics g)
         {
-            g.DrawImage(Textures.playerSheet,
-            new RectangleF(new PointF(posX - flip * sizeX / 2, posY), new Size(flip * sizeX, sizeX)),
-            spriteSrc, GraphicsUnit.Pixel);
-            //g.DrawRectangle(new Pen(Color.Black),collisionBox);
+            g.DrawImage(Textures.playerSheet, position, spriteSrc, GraphicsUnit.Pixel);
+            healthPoint.Update();
+
 
             if (++currentTime > preiod)
             {

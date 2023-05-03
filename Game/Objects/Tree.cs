@@ -10,7 +10,7 @@ namespace Game.Objects
 {
     public class Tree : IEntity
     {
-        public int healthPoint { get; set; }
+        public ProgressBar healthPoint { get; set; }
         public bool isAlive { get; set; }
 
         public float posX { get; set; }

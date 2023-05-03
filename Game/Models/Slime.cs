@@ -9,7 +9,7 @@ namespace Game.Models
 {
     public class Slime : IEntity
     {
-        public int healthPoint { get; set; }
+        public ProgressBar healthPoint { get; set; }
         public bool isAlive { get; set; }
 
         public float posX { get; set; }
@@ -204,7 +204,7 @@ namespace Game.Models
             if (!player.isImmunity && player.collisionBox.IntersectsWith(collisionBox))
             {
                 player.isImmunity = true;
-                player.healthPoint--;
+                player.healthPoint.currentValue -= 10;
             }
         }
     }

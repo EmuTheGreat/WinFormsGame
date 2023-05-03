@@ -11,6 +11,9 @@ namespace Game
         public static Image slimeSheet;
         public static Image objectsSheet;
         public static Image decorSheet;
+        private static Image healthBar;
+        public static Image healthBarBackground;
+        public static Image healthBarForeground;
 
         public static void LoadContent()
         {
@@ -26,6 +29,10 @@ namespace Game
                 "Content\\tilesets\\decor_16x16.png"));
             objectsSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
                 "Content\\objects\\objects.png"));
+            healthBar = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
+                "Content\\characters\\Heart.png"));
+            healthBarForeground = new Bitmap(healthBar).Clone(new Rectangle(new Point(12, 1), new Size(18, 84)), healthBar.PixelFormat);
+            healthBarBackground = new Bitmap(healthBar).Clone(new Rectangle(new Point(38, 1), new Size(18, 84)), healthBar.PixelFormat);
         }
     }
 }

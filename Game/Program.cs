@@ -149,7 +149,6 @@ namespace Game
                 cameraY = Math.Max(0, Math.Min(mapController.GetHeight() - WindowHeight + 25, cameraY));
 
                 g.TranslateTransform(-cameraX, -cameraY);
-
                 mapController.DrawMap(g);
 
                 Model.entities = new List<IEntity>(mapController.currentLevel.entities) { player };
@@ -158,6 +157,7 @@ namespace Game
                 {
                     entity.PlayAnimation(g);
                 }
+                player.healthPoint.Draw(g);
             }
         }
     }
