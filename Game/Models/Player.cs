@@ -1,7 +1,7 @@
 ﻿using Game.Objects;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
+using System.Timers;
 using static Game.MVC;
 
 namespace Game.Models
@@ -9,7 +9,7 @@ namespace Game.Models
     public class Player : IEntity
     {
         public int healthPoint { get; set; }
-        public bool isAlive { get { return healthPoint > 0; } set { healthPoint = 3; } }
+        public bool isAlive { get { return healthPoint > 0; } set { healthPoint = 1; } }
         public bool isImmunity { get; set; }
 
         public float posX { get; set; }
@@ -56,6 +56,8 @@ namespace Game.Models
         int currentTime = 0;
         int preiod = 5;
 
+        private Timer immunityTimer = new Timer(1500);
+
         public Player(int posX, int posY, ICreature model)
         {
             this.posX = posX;
@@ -73,17 +75,21 @@ namespace Game.Models
             flip = 1;
             isAlive = true;
             healthPoint = 3;
+            immunityTimer.Elapsed += ImmunityTimer_Elapsed;
+        }
+
+        private void ImmunityTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            isImmunity = false;
+            immunityTimer.Stop();
         }
 
         public void Update()
         {
-            var immunity = new Thread(() =>
+            if (isImmunity && !immunityTimer.Enabled)
             {
-                Thread.Sleep(2500);
-                isImmunity = false;
-            });
-            
-            if (isImmunity) immunity.Start();
+                immunityTimer.Start();
+            }
 
             var flag1 = true;
             var flag2 = true;

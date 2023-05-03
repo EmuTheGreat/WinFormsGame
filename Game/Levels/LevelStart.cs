@@ -53,6 +53,14 @@ namespace Game.Levels
         public int mapWidth => width;
         public int mapHeight => height;
         public List<IEntity> entities => 
-            new List<IEntity> { new Tree(new Point(800, 800)),slime1, slime2, new Tree(new Point(1200, 1200)), slime3};
+            new List<IEntity> 
+            { 
+                new Tree(new Point(800, 800)), 
+                new Tree(new Point(1200, 1200)),
+                new Tree(new Point(1600, 500)),
+                new Tree(new Point(400, 1000)),
+                new Tree(new Point(650, 150)),
+                slime1, slime2, slime3
+            };
     }
 }
