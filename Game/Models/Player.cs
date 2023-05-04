@@ -1,5 +1,6 @@
 ﻿using Game.Objects;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Timers;
@@ -9,7 +10,7 @@ namespace Game.Models
 {
     public class Player : IEntity
     {
-        public HealthBar healthPoint { get; set; }
+        public ProgressBar healthPoint { get; set; }
         public bool isAlive { get { return healthPoint.currentValue > 0; } set { healthPoint.currentValue = 1; } }
         public bool isImmunity { get; set; }
 
@@ -99,7 +100,7 @@ namespace Game.Models
                 foreach (var e in mapController.currentLevel.entities.Where(x =>
                 {
                     var type = x.GetType();
-                    return type == typeof(Tree);
+                    return type == typeof(Tree) || type == typeof(Bush) || type == typeof(Rock);
                 }))
                 {
                     if (new RectangleF(collisionBox.X + dirX, collisionBox.Y, collisionBox.Width, collisionBox.Height).IntersectsWith(e.collisionBox))
@@ -138,6 +139,7 @@ namespace Game.Models
         {
             g.DrawImage(Textures.playerSheet, position, spriteSrc, GraphicsUnit.Pixel);
             healthPoint.Update();
+            g.DrawString($"{posX},{posY}", new Font("Times New Roman", 12.0f), Brushes.AliceBlue, new PointF(posX, posY));
 
 
             if (++currentTime > preiod)
@@ -226,7 +228,7 @@ namespace Game.Models
 
                 if (currentAttack.IntersectsWith(entity.collisionBox))
                 {
-                    entity.isAlive = false;
+                    entity.healthPoint.currentValue -= 10;
                 }
             }
         }

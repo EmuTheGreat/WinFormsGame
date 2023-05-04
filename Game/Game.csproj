@@ -53,6 +53,8 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Objects\Bush.cs" />
+    <Compile Include="Objects\Rock.cs" />
     <Compile Include="ProgressBars\HealthBar.cs" />
     <Compile Include="interfaces\IEntity.cs" />
     <Compile Include="interfaces\ILevel.cs" />

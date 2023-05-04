@@ -1,5 +1,4 @@
-﻿using Game.interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Game.Objects
 {
-    public class Tree : IEntity
+    public class Bush : IEntity
     {
         public ProgressBar healthPoint { get; set; }
         public bool isAlive { get; set; }
@@ -43,14 +42,14 @@ namespace Game.Objects
         public RectangleF collisionBox { get; }
         public RectangleF position { get; set; }
 
-        public Tree(Point position)
+        public Bush(Point position)
         {
             posX = position.X;
             posY = position.Y;
-            sizeX = 192;
-            sizeY = 256;
+            sizeX = 128;
+            sizeY = 128;
             this.position = new RectangleF(position, new Size(sizeX, sizeY));
-            collisionBox = new RectangleF(position.X + 48, position.Y + 174, 96, 56);
+            collisionBox = new RectangleF(position.X + 5, position.Y + 64, 114, 50);
             delta = 10;
         }
 
@@ -60,11 +59,12 @@ namespace Game.Objects
 
         public void PlayAnimation(Graphics g)
         {
-            DrawObject(Textures.objectsSheet, position, new Rectangle(new Point(0, 80), new Size(46, 64)), g);
+            DrawObject(Textures.objectsSheet, position, new Rectangle(new Point(96, 112), new Size(32, 32)), g);
         }
         private void DrawObject(Image image, RectangleF rect, Rectangle rectSrc, Graphics g)
         {
             g.DrawImage(image, rect, rectSrc, GraphicsUnit.Pixel);
+            //g.DrawRectangles(new Pen(Color.Beige), new RectangleF[] { collisionBox });
         }
 
         public void SetRunAnimation() { }

@@ -9,8 +9,8 @@ namespace Game.Models
 {
     public class Slime : IEntity
     {
-        public HealthBar healthPoint { get; set; }
-        public bool isAlive { get; set; }
+        public ProgressBar healthPoint { get; set; }
+        public bool isAlive { get { return healthPoint.currentValue > 0; } set { healthPoint.currentValue = 10; } }
 
         public float posX { get; set; }
         public float posY { get; set; }
@@ -65,7 +65,7 @@ namespace Game.Models
             delta = model.delta;
             currentLimit = idleFrames;
             flip = 1;
-            isAlive = true;
+            healthPoint = new HealthBar(20, new Point(0, 0));
         }
 
         private void Move()
@@ -88,7 +88,7 @@ namespace Game.Models
             var flag1 = true;
             var flag2 = true;
 
-            if (++attackTime > attackPeriod && !isAttack && GetDistance(collisionBox, player.collisionBox) < 130)
+            if (++attackTime > attackPeriod && !isAttack && GetDistance(collisionBox, player.collisionBox) < 120)
             {
                 SetAnimation(2);
                 Move();
@@ -100,7 +100,7 @@ namespace Game.Models
             foreach (var e in mapController.currentLevel.entities.Where(x =>
             {
                 var type = x.GetType();
-                return type == typeof(Tree);
+                return type == typeof(Tree) || type == typeof(Bush) || type == typeof(Rock);
             }))
             #region
             {
