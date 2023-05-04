@@ -9,7 +9,7 @@ namespace Game.Models
 {
     public class Player : IEntity
     {
-        public ProgressBar healthPoint { get; set; }
+        public HealthBar healthPoint { get; set; }
         public bool isAlive { get { return healthPoint.currentValue > 0; } set { healthPoint.currentValue = 1; } }
         public bool isImmunity { get; set; }
 
@@ -74,7 +74,7 @@ namespace Game.Models
             delta = model.delta;
             currentLimit = idleFrames;
             flip = 1;
-            healthPoint = new ProgressBar(Textures.healthBarBackground, Textures.healthBarForeground, 100, new PointF(WindowWidth - 70, WindowHeight - 220));
+            healthPoint = new HealthBar(Textures.healthBarBackground, Textures.healthBarForeground, 100, new Point(WindowWidth - 70, WindowHeight - 220));
             immunityTimer.Elapsed += ImmunityTimer_Elapsed;
         }
 

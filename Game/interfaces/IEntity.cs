@@ -8,7 +8,7 @@ namespace Game
 {
     public interface IEntity
     {
-        ProgressBar healthPoint { get; set; }
+        HealthBar healthPoint { get; set; }
         bool isAlive { get; set; }
 
         float posX { get; set; }

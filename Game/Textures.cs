@@ -11,7 +11,7 @@ namespace Game
         public static Image slimeSheet;
         public static Image objectsSheet;
         public static Image decorSheet;
-        private static Image healthBar;
+        public static Image healthBar;
         public static Image healthBarBackground;
         public static Image healthBarForeground;
 

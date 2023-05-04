@@ -9,7 +9,7 @@ namespace Game.Models
 {
     public class Slime : IEntity
     {
-        public ProgressBar healthPoint { get; set; }
+        public HealthBar healthPoint { get; set; }
         public bool isAlive { get; set; }
 
         public float posX { get; set; }
