@@ -9,18 +9,14 @@ namespace Game
 {
     public class ProgressBar
     {
-        public Image background;
-        public Image foreground;
         public Point position;
         public float maxValue;
         public float currentValue;
         public Rectangle part;
         public Point srcPos;
 
-        public ProgressBar(Image bg, Image fg, float max, Point pos)
+        public ProgressBar(float max, Point pos)
         {
-            background = bg;
-            foreground = fg;
             maxValue = max;
             currentValue = max;
             position = pos;

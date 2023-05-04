@@ -9,10 +9,8 @@ namespace Game
 {
     public class HealthBar : ProgressBar
     {
-        public HealthBar(Image bg, Image fg, float max, Point pos) : base(bg, fg, max, pos)
-        {
-            background = bg;
-            foreground = fg;
+        public HealthBar(float max, Point pos) : base(max, pos)
+        {;
             maxValue = max;
             currentValue = max;
             position = pos;
@@ -30,7 +28,7 @@ namespace Game
 
         public override void Update()
         {
-            part.Y = (int)(currentValue / maxValue * foreground.Height) - 82;
+            part.Y = (int)(currentValue / maxValue * 80) - 78;
             position.Y = WindowHeight - 220 + part.Y * 2;
         }
     }
