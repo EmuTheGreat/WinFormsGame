@@ -58,7 +58,7 @@ namespace Game.Models
         int currentTime = 0;
         int preiod = 5;
 
-        private Timer immunityTimer = new Timer(500);
+        private Timer immunityTimer = new Timer(750);
 
         public Player(int posX, int posY, ICreature model)
         {
@@ -139,7 +139,7 @@ namespace Game.Models
         {
             g.DrawImage(Textures.playerSheet, position, spriteSrc, GraphicsUnit.Pixel);
             healthPoint.Update();
-            g.DrawString($"{posX},{posY}", new Font("Times New Roman", 12.0f), Brushes.AliceBlue, new PointF(posX, posY));
+            //g.DrawString($"{posX},{posY}", new Font("Times New Roman", 12.0f), Brushes.AliceBlue, new PointF(posX, posY));
 
 
             if (++currentTime > preiod)
@@ -223,12 +223,15 @@ namespace Game.Models
 
         public void Attack()
         {
-            foreach (var entity in Model.entities.Where(x => x.GetType() != typeof(Player)))
+            foreach (var entity in Model.entities.Where(x => x.GetType() == typeof(Slime)))
             {
 
                 if (currentAttack.IntersectsWith(entity.collisionBox))
                 {
                     entity.healthPoint.currentValue -= 10;
+                    //StopEntity();
+                    entity.dirX = -entity.dirX;
+                    entity.dirY = -entity.dirY;
                 }
             }
         }
