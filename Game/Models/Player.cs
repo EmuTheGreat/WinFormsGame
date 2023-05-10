@@ -1,8 +1,6 @@
 ﻿using Game.Objects;
 using System.Drawing;
-using System.Drawing.Text;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Timers;
 using static Game.MVC;
 
@@ -97,7 +95,7 @@ namespace Game.Models
 
             if (player.isAlive && !player.isAttack)
             {
-                foreach (var e in mapController.currentLevel.entities.Where(x =>
+                foreach (var e in mapController.currentLevel.Level.entities.Where(x =>
                 {
                     var type = x.GetType();
                     return type == typeof(Tree) || type == typeof(Bush) || type == typeof(Rock);
@@ -113,6 +111,10 @@ namespace Game.Models
                     }
                 }
 
+                if (new RectangleF(collisionBox.X + dirX, collisionBox.Y, collisionBox.Width, collisionBox.Height).IntersectsWith(mapController.currentLevel.Level.exit))
+                {
+                    mapController.ChangeCurrentLevel(true, gr);
+                }
                 if (flag1) posX = Clamp(posX += dirX, _minPos.X, _maxPos.X);
                 if (flag2) posY = Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
 
@@ -120,7 +122,7 @@ namespace Game.Models
             }
         }
 
-        public static void SetBounds()
+        public void SetBounds()
         {
             _minPos = new Point(MapController.cellSize + 20, -MapController.cellSize);
             _maxPos = new Point(mapController.GetWidth() - 192 / 2, mapController.GetHeight() - 240);
@@ -135,11 +137,15 @@ namespace Game.Models
 
         public bool IsMoving() => isMovingDown || isMovingUp || isMovingLeft || isMovingRight;
 
+        Graphics gr;
+
         public void PlayAnimation(Graphics g)
         {
+            gr = g;
             g.DrawImage(Textures.playerSheet, position, spriteSrc, GraphicsUnit.Pixel);
             healthPoint.Update();
             //g.DrawString($"{posX},{posY}", new Font("Times New Roman", 12.0f), Brushes.AliceBlue, new PointF(posX, posY));
+            g.DrawRectangles(new Pen(Color.Black), new RectangleF[] { collisionBox });
 
 
             if (++currentTime > preiod)

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using static Game.MVC;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
+﻿using System.Drawing;
+
 
 namespace Game
 {

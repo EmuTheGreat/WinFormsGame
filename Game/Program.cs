@@ -21,15 +21,14 @@ namespace Game
             public static List<IEntity> entities;
             public Model()
             {
-                WindowWidth = 1024;
-                WindowHeight = 768;
+                WindowWidth = 960;
+                WindowHeight = 736;
                 Textures.LoadContent();
 
-                player = new Player(300, 200, new PlayerModel());
+                player = new Player(1800, 860, new PlayerModel());
                 mapController = new MapController(new LevelStart());
-                Player.SetBounds();
-                Slime.SetBounds();
-                mapController.currentLevel.entities.Add(player);
+                mapController.currentLevel.Level.entities.ForEach(e => e.SetBounds());
+                player.SetBounds();
             }
         }
 
@@ -61,7 +60,7 @@ namespace Game
                             player.flip = 1;
                             break;
                         case Keys.J:
-                            player.isAlive = false;
+                            player.healthPoint.currentValue = 0;
                             break;
                         #endregion
 
@@ -98,7 +97,7 @@ namespace Game
 
                 if (e.KeyCode == Keys.K)
                 {
-                    player.isAlive = true;
+                    player.healthPoint.currentValue = 100;
                     player.deathAnimationFlag = false;
                     player.SetAnimation(1);
                 }
@@ -142,6 +141,21 @@ namespace Game
                 Graphics g = e.Graphics;
                 g.InterpolationMode = InterpolationMode.NearestNeighbor;
 
+                MoveCamera(g);
+                mapController.DrawMap(g);
+
+                Model.entities = new List<IEntity>(mapController.currentLevel.Level.entities) { player };
+
+                foreach (var entity in Model.entities.OrderBy(x => x.posY + x.sizeY + x.delta))
+                {
+                    entity.PlayAnimation(g);
+                }
+
+                player.healthPoint.Draw(g);
+            }
+
+            public static void MoveCamera(Graphics g)
+            {
                 float cameraX = player.posX - WindowWidth / 2;
                 float cameraY = player.posY - WindowHeight / 2 + player.sizeX / 2;
 
@@ -149,15 +163,6 @@ namespace Game
                 cameraY = Math.Max(0, Math.Min(mapController.GetHeight() - WindowHeight + 25, cameraY));
 
                 g.TranslateTransform(-cameraX, -cameraY);
-                mapController.DrawMap(g);
-
-                Model.entities = new List<IEntity>(mapController.currentLevel.entities) { player };
-
-                foreach (var entity in Model.entities.OrderBy(x => x.posY + x.sizeY + x.delta))
-                {
-                    entity.PlayAnimation(g);
-                }
-                player.healthPoint.Draw(g);
             }
         }
     }

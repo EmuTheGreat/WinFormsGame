@@ -76,5 +76,6 @@ namespace Game.Objects
         public void StopEntity() { }
 
         public void Attack() { }
+        public void SetBounds() { }
     }
 }

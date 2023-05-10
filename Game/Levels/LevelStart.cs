@@ -12,7 +12,6 @@ namespace Game.Levels
         public Slime slime2;
         public Slime slime3;
 
-
         public LevelStart()
         {
             slime1 = new Slime(945, 290, new SlimeModel());
@@ -22,7 +21,7 @@ namespace Game.Levels
 
         public int[,] map => new int[height, width]
             {
-                {5, 8, 8,  8,    8,    8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 6},
+               {5, 8, 8,  8,    8,    8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 6},
                 {9, 0, 25,   0,    0,    0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 25, 0, 0, 0, 0, 25, 0, 0, 0, 11},
                 {9, 0, 0,   0,    26,   0, 0, 0, 0, 0, 0, 0, 0, 0, 26,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11},
                 {9, 0, 0,   0,    1,    2, 3, 27, 0,0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 11},
@@ -39,7 +38,7 @@ namespace Game.Levels
                 {9, 0, 25,   0,    0,    0, 0, 0,  13, 14, 15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  26,  1, 2, 2, 2, 2, 2, 2},
                 {9, 0, 0,   0,    0,    0, 0, 0,  16, 20,  21, 2,  3,  0,  0,  0,  26,  0,  0,  28,  1,  2,  2,  22, 32, 14, 14, 14, 31, 14},
                 {9, 0, 0,   0,    0,    0, 0, 0,  25,  16,  20, 32, 21, 2,  2,  2,  2,  2,  2,  2,  22, 31, 14, 14, 19, 17, 17, 17, 17, 17},
-                {9, 26, 0,   0,    0,    0, 0, 26,  0,  0,   16, 17, 20, 14, 14, 32, 14, 14, 14, 32, 14, 19, 17, 17, 18, 0, 0, 25, 0, 11},
+                {9, 26, 0,   0,    0,    0, 0, 26,  0,  0,   16, 17, 20, 14, 14, 32, 14, 14, 14, 32, 14, 19, 17, 17, 18, 0, 0, 25, 0, 34},
                 {9, 0, 0,   0,    0,    0, 0, 0,  0,  0,   0,  0,  16, 17, 17, 17, 17, 17, 17, 17, 17, 18, 26,  0, 0, 0, 0, 0, 0, 11},
                 {9, 0, 0,   0,    0,    0, 0, 0,  0,  0, 0, 0, 0, 0, 0, 27, 0, 0, 0, 0, 28, 0, 0, 27, 0, 0, 0, 0, 0, 11},
                 {9, 0, 0,   0,    25,    0, 25, 0,  0,  0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 0, 11},
@@ -52,10 +51,10 @@ namespace Game.Levels
         private const int height = 24;
         public int mapWidth => width;
         public int mapHeight => height;
-        public List<IEntity> entities => 
-            new List<IEntity> 
-            { 
-                new Tree(new Point(800, 800)), 
+        public List<IEntity> entities =>
+            new List<IEntity>
+            {
+                new Tree(new Point(800, 800)),
                 new Tree(new Point(1200, 1200)),
                 new Tree(new Point(1600, 500)),
                 new Tree(new Point(400, 1000)),
@@ -68,5 +67,13 @@ namespace Game.Levels
                 new Rock(new Point(1465, 500)),
                 slime1, slime2, slime3
             };
+
+        public Point enterPosition { get; }
+
+        public Point exitPosition => new Point(1800, 860);
+
+        public Rectangle enter { get; }
+
+        public Rectangle exit => new Rectangle(1864, 896, 64, 192);
     }
 }

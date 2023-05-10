@@ -97,7 +97,7 @@ namespace Game.Models
                 attackTime = 0;
             }
 
-            foreach (var e in mapController.currentLevel.entities.Where(x =>
+            foreach (var e in mapController.currentLevel.Level.entities.Where(x =>
             {
                 var type = x.GetType();
                 return type == typeof(Tree) || type == typeof(Bush) || type == typeof(Rock);
@@ -159,7 +159,7 @@ namespace Game.Models
             currentLimit = runFrames;
         }
 
-        public static void SetBounds()
+        public void SetBounds()
         {
             _minPos = new Point(MapController.cellSize + 22, -MapController.cellSize + 64);
             _maxPos = new Point(mapController.GetWidth() - 128 / 2 - 32, mapController.GetHeight() - 160);

@@ -55,5 +55,6 @@ namespace Game
         void StopEntity();
 
         void Attack();
+        void SetBounds();
     }
 }

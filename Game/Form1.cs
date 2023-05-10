@@ -14,7 +14,6 @@ namespace Game
             InitializeComponent();
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
-            
 
             timer1.Interval = 5;
             timer1.Tick += new EventHandler(Update);

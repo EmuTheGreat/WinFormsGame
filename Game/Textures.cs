@@ -12,6 +12,7 @@ namespace Game
         public static Image objectsSheet;
         public static Image decorSheet;
         public static Image healthBar;
+        public static Image level1;
 
         public static void LoadContent()
         {
@@ -29,6 +30,8 @@ namespace Game
                 "Content\\objects\\objects.png"));
             healthBar = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
                 "Content\\characters\\Heart.png"));
+            level1 = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(),
+                "Content\\Levels\\LevelStart.png"));
         }
     }
 }

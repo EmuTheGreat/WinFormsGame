@@ -1,38 +1,52 @@
 ﻿using Game.interfaces;
-using Game.Models;
+using static Game.MVC;
 using System.Drawing;
-using System.Threading;
-using System.Threading.Tasks;
+using Game.Levels;
 
 namespace Game
 {
     public class MapController
     {
-        public ILevel currentLevel;
-        public static int cellSize = 64;
-        public static int spriteSize = 16;
+        public LevelNode currentLevel;
+        public const int cellSize = 64;
+        public const int spriteSize = 16;
+
+        public LinckedLevels levels;
 
         public MapController(ILevel level)
         {
-            currentLevel = level;
+            levels = new LinckedLevels();
+            levels.Add(level);
+            levels.Add(new Level1());
+            currentLevel = levels.Head;
         }
 
-        public void UpdateCurrentLevel(ILevel newLevel, Player player)
+        public void ChangeCurrentLevel(bool direction, Graphics g)
         {
-            currentLevel.entities.Remove(player);
-            currentLevel = newLevel;
-            currentLevel.entities.Add(player);
+            if (direction)
+            {
+                currentLevel = currentLevel.NextLevel;
+                player.posX = currentLevel.Level.enterPosition.X;
+                player.posY = currentLevel.Level.enterPosition.Y;
+            }
+            else 
+            { 
+                currentLevel = currentLevel.PreviousLevel;
+                player.posX = currentLevel.Level.exitPosition.X;
+                player.posY = currentLevel.Level.exitPosition.Y;
+            }
+            currentLevel.Level.entities.ForEach(e => e.SetBounds());
+            player.SetBounds();
         }
 
         public void DrawMap(Graphics g)
         {
-
-            for (int i = 0; i < currentLevel.mapWidth; i++)
+            for (int i = 0; i < currentLevel.Level.mapWidth; i++)
             {
-                for (int j = 0; j < currentLevel.mapHeight; j++)
+                for (int j = 0; j < currentLevel.Level.mapHeight; j++)
                 {
                     var rect = new Rectangle(new Point(i * cellSize, j * cellSize), new Size(66, 66));
-                    var e = currentLevel.map[j, i];
+                    var e = currentLevel.Level.map[j, i];
                     switch (e)
                     {
                         case 0:
@@ -146,9 +160,14 @@ namespace Game
                             DrawSprite(Textures.grassSprite, rect, 0, 0, g);
                             DrawSprite(Textures.plainsSheet, rect, 16, 96, g);
                             break;
+                        case 34:
+                            DrawSprite(Textures.grassSprite, rect, 0, 0, g);
+                            DrawSprite(Textures.plainsSheet, rect, 16, 64, g);
+                            break;
                     }
                 }
             }
+            g.DrawRectangle(new Pen(Color.Black), currentLevel.Level.exit);
         }
 
         private void DrawSprite(Image image, Rectangle rect, int srcX, int srcY, Graphics g)
@@ -156,14 +175,44 @@ namespace Game
             g.DrawImage(image, rect, srcX, srcY, spriteSize, spriteSize, GraphicsUnit.Pixel);
         }
 
-        public int GetWidth()
-        {
-            return cellSize * currentLevel.mapWidth + 15;
-        }
+        public int GetWidth() => cellSize * currentLevel.Level.mapWidth + 15;
+        public int GetHeight() => cellSize * currentLevel.Level.mapHeight + 14;
 
-        public int GetHeight()
+        private LinckedLevels GenerateLevels(LinckedLevels levels)
         {
-            return cellSize * currentLevel.mapHeight + 14;
+            return levels;
+        }
+    }
+
+    public class LevelNode
+    {
+        public ILevel Level { get; set; }
+        public LevelNode PreviousLevel { get; set; }
+        public LevelNode NextLevel { get; set; }
+
+        public LevelNode(ILevel level)
+        {
+            Level = level;
+        }
+    }
+
+    public class LinckedLevels
+    {
+        public LevelNode Head { get; set; }
+        public LevelNode Tail { get; set; }
+
+        public void Add(ILevel level)
+        {
+            LevelNode node = new LevelNode(level);
+
+            if (Head == null)
+                Head = node;
+            else
+            {
+                Tail.NextLevel = node;
+                node.PreviousLevel = Tail;
+            }
+            Tail = node;
         }
     }
 }
