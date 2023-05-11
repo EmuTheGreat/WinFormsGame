@@ -3,22 +3,12 @@ using Game.Models;
 using Game.Objects;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Game.Levels
 {
     public class LevelStart : ILevel
     {
-        public Slime slime1;
-        public Slime slime2;
-        public Slime slime3;
-
-        public LevelStart()
-        {
-            slime1 = new Slime(945, 290, new SlimeModel());
-            slime2 = new Slime(1115, 580, new SlimeModel());
-            slime3 = new Slime(1470, 265, new SlimeModel());
-        }
-
         public int[,] map => new int[height, width]
             {
                {5, 8, 8,  8,    8,    8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 6},
@@ -51,9 +41,9 @@ namespace Game.Levels
         private const int height = 24;
         public int mapWidth => width;
         public int mapHeight => height;
-        public List<IEntity> entities =>
-            new List<IEntity>
-            {
+
+        private List<IEntity> entities = new List<IEntity>
+        {
                 new Tree(new Point(800, 800)),
                 new Tree(new Point(1200, 1200)),
                 new Tree(new Point(1600, 500)),
@@ -65,8 +55,12 @@ namespace Game.Levels
                 new Rock(new Point(380, 800)),
                 new Rock(new Point(1675, 1195)),
                 new Rock(new Point(1465, 500)),
-                slime1, slime2, slime3
-            };
+                new Slime(945, 290, new SlimeModel()),
+                new Slime(1115, 580, new SlimeModel()),
+                new Slime(1470, 265, new SlimeModel())
+        };
+        
+        public List<IEntity> Entities { get { return entities; } set { entities.Concat(value); } }
 
         public Point enterPosition { get; }
 

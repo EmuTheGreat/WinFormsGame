@@ -1,10 +1,9 @@
 ﻿using Game.interfaces;
+using Game.Objects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Game.Levels
 {
@@ -14,11 +13,14 @@ namespace Game.Levels
         private const int width = 15;
         public int mapWidth => width;
         public int mapHeight => height;
+        private List<IEntity> entities = new List<IEntity>();
+        public List<IEntity> Entities { get { return entities; } set { entities = value; } }
 
-        public List<IEntity> entities => new List<IEntity>();
 
-        public Rectangle enter => new Rectangle();
-        public Rectangle exit => new Rectangle();
+        public Rectangle enter => new Rectangle(0, height * MapController.cellSize / 2 - MapController.cellSize + 32, 
+            MapController.cellSize, 2 * MapController.cellSize - 64);
+        public Rectangle exit => new Rectangle(width * MapController.cellSize - 64, 
+            height * MapController.cellSize / 2 - MapController.cellSize + 32, MapController.cellSize, 2 * MapController.cellSize - 64);
 
         public int[,] map => new int[height, width]
         {
@@ -26,17 +28,17 @@ namespace Game.Levels
             {9,0,0,0,0,0,0,0,0,0,0,0,0,0,11},
             {9,0,0,0,0,0,0,0,0,0,0,0,0,0,11},
             {9,0,0,0,0,0,0,0,0,0,0,0,0,0,11},
-            {9,0,0,0,0,0,0,0,0,0,0,0,0,0,11},
-            {9,0,0,0,0,0,0,0,0,0,0,0,0,0,11},
-            {9,0,0,0,0,0,0,0,0,0,0,0,0,0,11},
+            {35,0,0,0,0,0,0,0,0,0,0,0,0,0,33},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {36,0,0,0,0,0,0,0,0,0,0,0,0,0,34},
             {9,0,0,0,0,0,0,0,0,0,0,0,0,0,11},
             {9,0,0,0,0,0,0,0,0,0,0,0,0,0,11},
             {9,0,0,0,0,0,0,0,0,0,0,0,0,0,11},
             {4,10,10,10,10,10,10,10,10,10,10,10,10,10,7},
         };
 
-        public Point enterPosition => new Point (100, 300);
+        public Point enterPosition => new Point(100, 200);
 
-        public Point exitPosition => throw new NotImplementedException();
+        public Point exitPosition => new Point(870, 200);
     }
 }

@@ -65,7 +65,7 @@ namespace Game.Models
             delta = model.delta;
             currentLimit = idleFrames;
             flip = 1;
-            healthPoint = new HealthBar(20, new Point(0, 0));
+            healthPoint = new HealthBar(35, new Point(0, 0));
         }
 
         private void Move()
@@ -97,7 +97,7 @@ namespace Game.Models
                 attackTime = 0;
             }
 
-            foreach (var e in mapController.currentLevel.Level.entities.Where(x =>
+            foreach (var e in mapController.currentLevel.Level.Entities.Where(x =>
             {
                 var type = x.GetType();
                 return type == typeof(Tree) || type == typeof(Bush) || type == typeof(Rock);
@@ -204,7 +204,7 @@ namespace Game.Models
             if (!player.isImmunity && player.collisionBox.IntersectsWith(collisionBox))
             {
                 player.isImmunity = true;
-                player.healthPoint.currentValue -= 10;
+                player.healthPoint.currentValue -= 20;
             }
         }
     }

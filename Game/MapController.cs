@@ -2,6 +2,10 @@
 using static Game.MVC;
 using System.Drawing;
 using Game.Levels;
+using System.Collections.Generic;
+using Game.Objects;
+using System.Linq;
+using Game.Models;
 
 namespace Game
 {
@@ -13,15 +17,13 @@ namespace Game
 
         public LinckedLevels levels;
 
-        public MapController(ILevel level)
+        public MapController()
         {
-            levels = new LinckedLevels();
-            levels.Add(level);
-            levels.Add(new Level1());
+            levels = GenerateLevels();
             currentLevel = levels.Head;
         }
 
-        public void ChangeCurrentLevel(bool direction, Graphics g)
+        public void ChangeCurrentLevel(bool direction)
         {
             if (direction)
             {
@@ -29,13 +31,13 @@ namespace Game
                 player.posX = currentLevel.Level.enterPosition.X;
                 player.posY = currentLevel.Level.enterPosition.Y;
             }
-            else 
-            { 
+            else
+            {
                 currentLevel = currentLevel.PreviousLevel;
                 player.posX = currentLevel.Level.exitPosition.X;
                 player.posY = currentLevel.Level.exitPosition.Y;
             }
-            currentLevel.Level.entities.ForEach(e => e.SetBounds());
+            currentLevel.Level.Entities.ForEach(e => e.SetBounds());
             player.SetBounds();
         }
 
@@ -164,10 +166,19 @@ namespace Game
                             DrawSprite(Textures.grassSprite, rect, 0, 0, g);
                             DrawSprite(Textures.plainsSheet, rect, 16, 64, g);
                             break;
+                        case 35:
+                            DrawSprite(Textures.grassSprite, rect, 0, 0, g);
+                            DrawSprite(Textures.plainsSheet, rect, 48, 96, g);
+                            break;
+                        case 36:
+                            DrawSprite(Textures.grassSprite, rect, 0, 0, g);
+                            DrawSprite(Textures.plainsSheet, rect, 48, 64, g);
+                            break;
                     }
                 }
             }
             g.DrawRectangle(new Pen(Color.Black), currentLevel.Level.exit);
+            g.DrawRectangle(new Pen(Color.Black), currentLevel.Level.enter);
         }
 
         private void DrawSprite(Image image, Rectangle rect, int srcX, int srcY, Graphics g)
@@ -178,8 +189,17 @@ namespace Game
         public int GetWidth() => cellSize * currentLevel.Level.mapWidth + 15;
         public int GetHeight() => cellSize * currentLevel.Level.mapHeight + 14;
 
-        private LinckedLevels GenerateLevels(LinckedLevels levels)
+        private LinckedLevels GenerateLevels()
         {
+            LinckedLevels levels = new LinckedLevels();
+            var patterns = new LevelPatterns();
+            levels.Add(new LevelStart());
+
+            foreach(var p in patterns.patterns)
+            {
+                levels.Add(new Level1 { Entities = p });
+            }
+            
             return levels;
         }
     }
@@ -215,4 +235,70 @@ namespace Game
             Tail = node;
         }
     }
+
+    class LevelPatterns
+    {
+        static SlimeModel slimeModel = new SlimeModel();
+        public List<List<IEntity>> patterns = new List<List<IEntity>>
+        {
+            pattern1,
+            pattern2
+        };
+
+        public static List<IEntity> pattern1 = new List<IEntity>
+        {
+            new Rock(new Point(64, 256)),
+            new Rock(new Point(128, 256)),
+            new Rock(new Point(192, 256)),
+            new Rock(new Point(256, 256)),
+            new Rock(new Point(320, 256)),
+            new Rock(new Point(320, 210)),
+            new Rock(new Point(320, 110)),
+            new Rock(new Point(320, 64)),
+            new Slime(128, 32, slimeModel),
+
+            new Rock(new Point(64, 384)),
+            new Rock(new Point(128, 384)),
+            new Rock(new Point(192, 384)),
+            new Rock(new Point(256, 384)),
+            new Rock(new Point(320, 384)),
+            new Rock(new Point(320, 430)),
+            new Rock(new Point(320, 558)),
+            new Rock(new Point(320, 606)),
+            new Slime(128, 532, slimeModel),
+
+            new Rock(new Point(576, 384)),
+            new Rock(new Point(640, 384)),
+            new Rock(new Point(704, 384)),
+            new Rock(new Point(768, 384)),
+            new Rock(new Point(832, 384)),
+            new Rock(new Point(576, 430)),
+            new Rock(new Point(576, 558)),
+            new Rock(new Point(576, 606)),
+            new Slime(800, 532, slimeModel),
+
+            new Rock(new Point(576, 256)),
+            new Rock(new Point(640, 256)),
+            new Rock(new Point(704, 256)),
+            new Rock(new Point(768, 256)),
+            new Rock(new Point(832, 256)),
+            new Rock(new Point(576, 210)),
+            new Rock(new Point(576, 110)),
+            new Rock(new Point(576, 64)),
+            new Slime(800, 32, slimeModel),
+
+        };
+        public static List<IEntity> pattern2 = new List<IEntity>
+        {
+            new Rock(new Point(200, 360)),
+            new Rock(new Point(720, 440)),
+            new Rock(new Point(300, 32)),
+            new Tree(new Point(600, 0)),
+            new Slime(800, 532, slimeModel),
+            new Slime(720, 460, slimeModel),
+            new Slime(500, 300, slimeModel),
+        };
+
+    }
+
 }

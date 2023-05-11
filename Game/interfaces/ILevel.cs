@@ -16,6 +16,6 @@ namespace Game.interfaces
         int[,] map { get; }
         int mapWidth { get; }
         int mapHeight { get; }
-        List<IEntity> entities { get; }
+        List<IEntity> Entities { get; set; }
     }
 }

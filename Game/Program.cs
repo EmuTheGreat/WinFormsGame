@@ -26,8 +26,8 @@ namespace Game
                 Textures.LoadContent();
 
                 player = new Player(1800, 860, new PlayerModel());
-                mapController = new MapController(new LevelStart());
-                mapController.currentLevel.Level.entities.ForEach(e => e.SetBounds());
+                mapController = new MapController();
+                mapController.currentLevel.Level.Entities.ForEach(e => e.SetBounds());
                 player.SetBounds();
             }
         }
@@ -144,7 +144,7 @@ namespace Game
                 MoveCamera(g);
                 mapController.DrawMap(g);
 
-                Model.entities = new List<IEntity>(mapController.currentLevel.Level.entities) { player };
+                Model.entities = new List<IEntity>(mapController.currentLevel.Level.Entities) { player };
 
                 foreach (var entity in Model.entities.OrderBy(x => x.posY + x.sizeY + x.delta))
                 {
