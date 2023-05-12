@@ -4,8 +4,8 @@ using System.Drawing;
 using Game.Levels;
 using System.Collections.Generic;
 using Game.Objects;
-using System.Linq;
 using Game.Models;
+using System.Collections;
 
 namespace Game
 {
@@ -177,8 +177,8 @@ namespace Game
                     }
                 }
             }
-            g.DrawRectangle(new Pen(Color.Black), currentLevel.Level.exit);
-            g.DrawRectangle(new Pen(Color.Black), currentLevel.Level.enter);
+            //g.DrawRectangle(new Pen(Color.Black), currentLevel.Level.exit);
+            //g.DrawRectangle(new Pen(Color.Black), currentLevel.Level.enter);
         }
 
         private void DrawSprite(Image image, Rectangle rect, int srcX, int srcY, Graphics g)
@@ -216,7 +216,7 @@ namespace Game
         }
     }
 
-    public class LinckedLevels
+    public class LinckedLevels : IEnumerable<LevelNode>
     {
         public LevelNode Head { get; set; }
         public LevelNode Tail { get; set; }
@@ -233,6 +233,21 @@ namespace Game
                 node.PreviousLevel = Tail;
             }
             Tail = node;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)this).GetEnumerator();
+        }
+
+        IEnumerator<LevelNode> IEnumerable<LevelNode>.GetEnumerator()
+        {
+            LevelNode current = Head;
+            while (current != null)
+            {
+                yield return current;
+                current = current.NextLevel;
+            }
         }
     }
 
@@ -295,10 +310,12 @@ namespace Game
             new Rock(new Point(300, 32)),
             new Tree(new Point(600, 0)),
             new Slime(800, 532, slimeModel),
-            new Slime(720, 460, slimeModel),
+            new Slime(200, 453, slimeModel),
             new Slime(500, 300, slimeModel),
+            new Rock(new Point(832, 256)),
+            new Rock(new Point(832, 304)),
+            new Rock(new Point(832, 352)),
+            new Rock(new Point(832, 400))
         };
-
     }
-
 }

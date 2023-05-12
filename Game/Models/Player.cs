@@ -17,7 +17,8 @@ namespace Game.Models
 
         public float dirX { get; set; }
         public float dirY { get; set; }
-        public int speed { get; set; }
+        private int playerSpeed;
+        public int speed { get => playerSpeed; set => playerSpeed = value; }
 
         public bool isMovingLeft { get; set; }
         public bool isMovingRight { get; set; }
@@ -51,6 +52,9 @@ namespace Game.Models
         public RectangleF position => new RectangleF(posX - flip * sizeX / 2, posY, flip * sizeX, sizeY);
         public Rectangle spriteSrc => new Rectangle(spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize);
 
+        private int damage;
+        public int Damage { get => damage; set => damage = value; }
+
         private static Point _minPos, _maxPos;
 
         int currentTime = 0;
@@ -75,6 +79,7 @@ namespace Game.Models
             flip = 1;
             healthPoint = new HealthBar(100, new Point(WindowWidth - 70, WindowHeight - 220));
             immunityTimer.Elapsed += ImmunityTimer_Elapsed;
+            damage = 10;
         }
 
         private void ImmunityTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -95,24 +100,20 @@ namespace Game.Models
 
             if (player.isAlive && !player.isAttack)
             {
-                foreach (var e in mapController.currentLevel.Level.Entities.Where(x =>
-                {
-                    var type = x.GetType();
-                    return type == typeof(Tree) || type == typeof(Bush) || type == typeof(Rock);
-                }))
-                {
-                    if (new RectangleF(collisionBox.X + dirX, collisionBox.Y, collisionBox.Width, collisionBox.Height)
-                        .IntersectsWith(e.collisionBox))
-                    {
-                        flag1 = false;
-                    }
-                    if (new RectangleF(collisionBox.X, collisionBox.Y + dirY, collisionBox.Width, collisionBox.Height)
-                        .IntersectsWith(e.collisionBox))
-                    {
-                        flag2 = false;
-                    }
-                }
+                CheckCollison(ref flag1, ref flag2);
+                CheckChangeLevel();
 
+                if (flag1) posX = Clamp(posX += dirX, _minPos.X, _maxPos.X);
+                if (flag2) posY = Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
+
+                SetRunAnimation();
+            }
+        }
+
+        private void CheckChangeLevel()
+        {
+            if (mapController.currentLevel.Level.Entities.All(x => !x.isAlive))
+            {
                 if (new RectangleF(collisionBox.X + dirX + 5, collisionBox.Y, collisionBox.Width, collisionBox.Height)
                     .IntersectsWith(mapController.currentLevel.Level.exit))
                 {
@@ -123,10 +124,27 @@ namespace Game.Models
                 {
                     mapController.ChangeCurrentLevel(false);
                 }
-                if (flag1) posX = Clamp(posX += dirX, _minPos.X, _maxPos.X);
-                if (flag2) posY = Clamp(posY += dirY, _minPos.Y, _maxPos.Y);
+            }
+        }
 
-                SetRunAnimation();
+        private void CheckCollison(ref bool flag1, ref bool flag2)
+        {
+            foreach (var e in mapController.currentLevel.Level.Entities.Where(x =>
+            {
+                var type = x.GetType();
+                return type == typeof(Tree) || type == typeof(Bush) || type == typeof(Rock);
+            }))
+            {
+                if (new RectangleF(collisionBox.X + dirX, collisionBox.Y, collisionBox.Width, collisionBox.Height)
+                    .IntersectsWith(e.collisionBox))
+                {
+                    flag1 = false;
+                }
+                if (new RectangleF(collisionBox.X, collisionBox.Y + dirY, collisionBox.Width, collisionBox.Height)
+                    .IntersectsWith(e.collisionBox))
+                {
+                    flag2 = false;
+                }
             }
         }
 
@@ -149,9 +167,8 @@ namespace Game.Models
         {
             g.DrawImage(Textures.playerSheet, position, spriteSrc, GraphicsUnit.Pixel);
             healthPoint.Update();
-            g.DrawString($"{posX},{posY}", new Font("Times New Roman", 12.0f), Brushes.AliceBlue, new PointF(posX, posY));
-            g.DrawRectangles(new Pen(Color.Black), new RectangleF[] { collisionBox });
-
+            //g.DrawString($"{posX},{posY}", new Font("Times New Roman", 12.0f), Brushes.AliceBlue, new PointF(posX, posY));
+            //g.DrawRectangles(new Pen(Color.Black), new RectangleF[] { collisionBox });
 
             if (++currentTime > preiod)
             {
@@ -239,8 +256,7 @@ namespace Game.Models
 
                 if (currentAttack.IntersectsWith(entity.collisionBox))
                 {
-                    entity.healthPoint.currentValue -= 10;
-                    //StopEntity();
+                    entity.healthPoint.currentValue -= Damage;
                     entity.dirX = -entity.dirX;
                     entity.dirY = -entity.dirY;
                 }

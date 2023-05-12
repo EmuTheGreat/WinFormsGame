@@ -1,13 +1,11 @@
-﻿using Game.Models;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Threading;
+﻿using System.Drawing;
+
 
 namespace Game
 {
     public interface IEntity
     {
+        int Damage { get; set; }
         ProgressBar healthPoint { get; set; }
         bool isAlive { get; set; }
 

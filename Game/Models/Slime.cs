@@ -45,6 +45,8 @@ namespace Game.Models
         public RectangleF position => new RectangleF(posX, posY, sizeX, sizeY);
         public RectangleF spriteSrc => new RectangleF(spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize);
 
+        public int Damage { get => 20; set => throw new NotImplementedException(); }
+
         private int currentTime = 0;
         private int period = 8;
         private int attackTime = 20;
@@ -65,7 +67,7 @@ namespace Game.Models
             delta = model.delta;
             currentLimit = idleFrames;
             flip = 1;
-            healthPoint = new HealthBar(35, new Point(0, 0));
+            healthPoint = new HealthBar(30, new Point(0, 0));
         }
 
         private void Move()
@@ -204,7 +206,7 @@ namespace Game.Models
             if (!player.isImmunity && player.collisionBox.IntersectsWith(collisionBox))
             {
                 player.isImmunity = true;
-                player.healthPoint.currentValue -= 20;
+                player.healthPoint.currentValue -= Damage;
             }
         }
     }
